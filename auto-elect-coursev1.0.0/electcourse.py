@@ -102,9 +102,23 @@ if mode == "electcourse":
     course_element = driver.find_element(By.XPATH, f'//td/div[contains(@class, "courseName") and contains(text(), "{course_name}")]')
     highlight(course_element)  # 高亮含有课号的元素
     course_element.click()
-    input("按任意键继续...")
 
-    # 后续在等待选课窗口开放...
+    # 7.定位课号并点击
+    course_number_base_xpath = "/html/body/div[1]/div[1]/div[1]/section/main/div/div[1]/div/div[2]/div[2]/div/div/div/div[2]/table/tr"
+    last_two_digits = int(course_number[-2:]) + 2
+    new_course_number = course_number[:-2] + f"{last_two_digits:01d}" 
+    row_index = last_two_digits - 1 
+    xpath = f"{course_number_base_xpath}[{row_index}]/td[1]"
+    new_course_sequence_element = driver.find_element(By.XPATH, xpath)
+    highlight(new_course_sequence_element)  # 高亮课程序号的元素
+    new_course_sequence_element.click()
+    
+    # 8.点击保存课表按钮
+    save_schedule_button = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/section/main/div/div[1]/div/div[2]/div[1]/div/div/div[1]/div[2]/button[2]')
+    highlight(save_schedule_button)  # 高亮保存课表按钮
+    save_schedule_button.click()
+    input("按任意键继续...")
+    # 后续在等待选课窗口开放再进行测试...
     
 input("按任意键退出...")
 # 退出浏览器
