@@ -5,7 +5,7 @@
 ## 直接看release下载使用方法
 ### v0.2.0版本截图
 <div align="center">
-  <img src="https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/img/example_v0.2.0.png" width="600">
+  <img src="https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/img/example_v0.2.0.png" width="400">
 </div>
 
 ### v0.1.1版本截图
