@@ -1,9 +1,9 @@
-<div align="center">
+<div align="center"
 <h1>Tongji Electcourse</h1>
 </div>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/icon/logo.png" width="300">
+  <img src="https://boatchanting.github.io/Tongji-electcourse2/icon/logo.png" width="300">
 </div>
 
 <div align="center">
@@ -15,12 +15,12 @@
 
 ### v0.2.0版本截图
 <div align="center">
-  <img src="https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/img/example_v0.2.0.png" width="400">
+  <img src="https://boatchanting.github.io/Tongji-electcourse2/img/example_v0.2.0.png" width="400">
 </div>
 
 ### v0.1.1版本截图
 <div align="center">
-  <img src="https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/example.png" width="600">
+  <img src="https://boatchanting.github.io/Tongji-electcourse2/example.png" width="600">
 </div>
 
 ## 功能特点
