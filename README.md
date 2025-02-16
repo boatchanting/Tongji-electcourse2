@@ -1,8 +1,16 @@
-# 自动化选课脚本
+<div align="center">
+<h1>Tongji Electcourse</h1>
+</div>
 
+<div align="center">
+  <img src="https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/icon/logo.png" width="300">
+</div>
+
+<div align="center">
 本项目使用 `Selenium` 库实现自动选课功能，适配学校选课网站。它能够自动登录、选择课程，并进行选课操作。
+</div>
 
-## 直接看release下载使用方法
+## 🌟🌟🌟直接看release下载使用方法
 ### v0.2.0版本截图
 <div align="center">
   <img src="https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/img/example_v0.2.0.png" width="400">
