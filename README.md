@@ -25,8 +25,8 @@
 </div>
 
 <div align="center">
-  <h4>v0.2.0版本截图</h4>
-  <img src="https://boatchanting.github.io/Tongji-electcourse2/img/example_v0.2.0.png" width="400" alt="v0.2.0 Screenshot">
+  <h4>v0.2.1版本截图</h4>
+  <img src="https://boatchanting.github.io/Tongji-electcourse2/img/example_v0.2.1.png" width="400" alt="v0.2.1 Screenshot">
 </div>
 
 <div align="center">
