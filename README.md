@@ -3,7 +3,14 @@
   <p style="font-size: 1.2rem; color: #777;">使用 Selenium 库实现自动选课功能</p>
   <img src="https://boatchanting.github.io/Tongji-electcourse2/icon/logo.png" width="300" alt="Logo">
 </div>
-
+<!-- 添加一些徽章 -->
+<div align="center">
+  <a href="https://github.com/boatchanting/Tongji-electcourse2/releases"><img src="https://img.shields.io/github/downloads/boatchanting/Tongji-electcourse2/total" alt="Total Downloads"></a>
+  <a href="https://github.com/boatchanting/Tongji-electcourse2/issues"><img src="https://img.shields.io/github/issues/boatchanting/Tongji-electcourse2" alt="Open Issues"></a>
+  <a href="https://github.com/boatchanting/Tongji-electcourse2/releases"><img src="https://img.shields.io/github/v/release/boatchanting/Tongji-electcourse2?style=flat-square&label=Version" alt="Version"></a>
+  <a href="https://www.python.org/downloads/release/python-3100/"><img src="https://img.shields.io/badge/Python-%3E%3D3.10-blue?style=flat-square" alt="Python Version"></a>
+  <a href="https://github.com/boatchanting/Tongji-electcourse2/graphs/contributors"><img src="https://img.shields.io/github/contributors/boatchanting/Tongji-electcourse2?style=flat-square" alt="Contributors"></a>
+</div>
 <div align="center">
   <p>本项目使用 `Selenium` 库及 webdriver 实现自动选课功能，适配学校选课网站。它能够自动登录、选择课程，并进行选课操作。</p>
 </div>
