@@ -1,34 +1,44 @@
 <div align="center">
-<h1>Tongji Electcourse</h1>
+  <h1 style="font-family: 'Arial', sans-serif; color: #333;">Tongji Electcourse</h1>
+  <p style="font-size: 1.2rem; color: #777;">使用 Selenium 库实现自动选课功能</p>
+  <img src="https://boatchanting.github.io/Tongji-electcourse2/icon/logo.png" width="300" alt="Logo">
 </div>
 
 <div align="center">
-  <img src="https://boatchanting.github.io/Tongji-electcourse2/icon/logo.png" width="300">
+  <p>本项目使用 `Selenium` 库及 webdriver 实现自动选课功能，适配学校选课网站。它能够自动登录、选择课程，并进行选课操作。</p>
 </div>
 
 <div align="center">
-本项目使用 `Selenium` 库及webdriver实现自动选课功能，适配学校选课网站。它能够自动登录、选择课程，并进行选课操作。
+  <h3>🌟🌟🌟直接看release下载exe可执行文件</h3>
+  <a href="https://github.com/boatchanting/Tongji-electcourse2/releases">
+    <button style="background-color: #007BFF; color: white; border: none; padding: 10px 20px; font-size: 1.2rem; border-radius: 5px; cursor: pointer;">
+      我要下载
+    </button>
+  </a>
 </div>
 
-## 🌟🌟🌟直接看release下载exe可执行文件
-[我要下载](https://github.com/boatchanting/Tongji-electcourse2/releases)
-
-### v0.2.0版本截图
 <div align="center">
-  <img src="https://boatchanting.github.io/Tongji-electcourse2/img/example_v0.2.0.png" width="400">
+  <h4>v0.2.0版本截图</h4>
+  <img src="https://boatchanting.github.io/Tongji-electcourse2/img/example_v0.2.0.png" width="400" alt="v0.2.0 Screenshot">
 </div>
 
-### v0.1.1版本截图
 <div align="center">
-  <img src="https://boatchanting.github.io/Tongji-electcourse2/example.png" width="600">
+  <h4>v0.1.1版本截图</h4>
+  <img src="https://boatchanting.github.io/Tongji-electcourse2/example.png" width="600" alt="v0.1.1 Screenshot">
 </div>
 
-## 功能特点
-- 自动登录选课网站
-- 通过学号和密码自动进行学校系统身份验证
-- 自动定位并选择指定课程
-- 结果反馈，确认选课是否成功
-- 不用守在电脑前，可以做其他事情
+
+<h3>功能特点</h3>
+<ul style="list-style: none; padding: 0;">
+  <li>✅ 自动登录选课网站</li>
+  <li>✅ 通过学号和密码进行身份验证</li>
+  <li>✅ 自动定位并选择指定课程</li>
+  <li>✅ 结果反馈，确认选课是否成功</li>
+  <li>✅ 不用守在电脑前，可以做其他事情</li>
+  <li>✅ 选课自动化展示，用户可以实时查看选课过程</li>
+  <li>✅ 选课日志展示</li>
+</ul>
+
 
 ## 环境配置（快速）
 1. 下载/克隆本项目到本地：
