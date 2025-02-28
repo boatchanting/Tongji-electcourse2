@@ -9,11 +9,11 @@ import random
 import sys
 
 welcome_text = """
-！！！该版本选修课和荣誉课程适配没做，需等待进入选课界面后手动添加
+！！！输入学号，密码，课程号，最大重试次数，点击开始即可开始自动选课！！！
 
-欢迎使用Tongji-electcourse2v0.2.0(测试版)，请勿用于非法用途，仅供学习交流使用
+欢迎使用Tongji-electcourse2v0.2.1(测试版)，请勿用于非法用途，仅供学习交流使用
 
-感谢您使用Tongji-electcourse2v0.2.0(测试版)（以下简称“本程序”）。
+感谢您使用Tongji-electcourse2v0.2.1(测试版)（以下简称“本程序”）。
 
 1. 本程序仅供学习和交流使用，请勿用于非法用途。
 2. 在使用过程中，所有的操作和行为都运行在您的**本地环境**中，我们不会收集、存储或上传任何个人信息。
@@ -408,82 +408,26 @@ def auto_elect_course(username, password, course_number, max_retries):
             time.sleep(10)
             raise e
 
-        # 4. 定位课程并添加到选课列表
+        # 4. 定位课程并添加到选课列表 (v0.2.1升级适配选修课)
+        search_and_add_course(course_number, driver, wait, highlight)
+
+        # 5.定位提交按钮元素并点击
         try:
-            # 序号
-            target_course_number = course_number[:-2]  # 课程类别由course_number去除后两位构成
-
-            # 检查是否在 iframe 中
-            iframes = driver.find_elements(By.TAG_NAME, "iframe")
-            if iframes:
-                logging.info(f"页面中存在 {len(iframes)} 个 iframe，尝试切换到 iframe")
-                driver.switch_to.frame(iframes[0])  # 假设目标 iframe 是第一个
-
-            # 等待序号所在的 <span> 元素加载，并通过祖先定位到 <tr>
-            target_row = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, f'//tr[.//span[normalize-space(text())="{target_course_number}"]]')
-                )
-            )
-            logging.info(f"已成功定位到序号为 {target_course_number} 的行元素")
-
-            # 打印整个 <tr> 元素的 HTML
-            print(target_row.get_attribute("outerHTML"))
-
-            # 定位复选框的父级 <label> 并点击
-            checkbox_label = target_row.find_element(By.XPATH, './/label[contains(@class, "el-checkbox")]')
-            logging.info("已定位到复选框的父级标签")
-
-            # 滚动到复选框并确保可见
-            driver.execute_script("arguments[0].scrollIntoView(true);", checkbox_label)
-
-            # 高亮显示复选框父级标签并点击
-            highlight(checkbox_label)
-            checkbox_label.click()
-            logging.info(f"已点击序号为 {target_course_number} 的行中的复选框")
-
-            # 如果需要切回主内容
-            if iframes:
-                driver.switch_to.default_content()
-
-            # 5.定位提交按钮元素并点击
-            try:
-                submit_button = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/section/main/div/div[1]/div/div[4]/div/div[3]/span/button[2]')
-                highlight(submit_button)  # 高亮提交按钮
-                submit_button.click()
-                logging.info("5.点击提交按钮")
-            except Exception as e:
-                logging.error(f"5.找不到提交按钮{feedback}")
-                time.sleep(10)
-                raise e    
-
+            submit_button = driver.find_element(By.XPATH, '/html/body/div[1]/div[1]/div[1]/section/main/div/div[1]/div/div[4]/div/div[3]/span/button[2]')
+            highlight(submit_button)  # 高亮提交按钮
+            submit_button.click()
+            logging.info("5.点击提交按钮")
         except Exception as e:
-            logging.error(f"定位序号 {target_course_number} 的行元素时发生错误: {e}")
-            # 如果定位目标行失败，尝试点击取消按钮
-            try:
-                cancel_button = wait.until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, '/html/body/div[1]/div[1]/div[1]/section/main/div/div[1]/div/div[4]/div/div[3]/span/button[1]')
-                    )
-                )
-                logging.info("未找到目标课程，尝试点击取消按钮")
-
-                # 点击取消按钮
-                cancel_button.click()
-                logging.info("已点击取消按钮")
-
-            except Exception as cancel_exception:
-                logging.error(f"未能点击取消按钮: {cancel_exception}{feedback}")
-                time.sleep(10)
-                raise e
+            logging.error(f"5.找不到提交按钮")
+            raise e    
 
         # input("进入选课界面后，请按任意键继续...") # 测试用
         #！！！需要优化的地方
-        logging.info("请检查课程是否已经被添加到选课列表中，如果没有请在一分钟内手动添加，如果已经添加请忽略")
-        for i in range(6):
-            time.sleep(10)
-            wait_time_checkcourse = (6 - i)*10
-            logging.info(f"等待手动检查中...{wait_time_checkcourse}秒后结束")
+        #logging.info("请检查课程是否已经被添加到选课列表中，如果没有请在一分钟内手动添加，如果已经添加请忽略")
+        #for i in range(6):
+        #    time.sleep(10)
+        #    wait_time_checkcourse = (6 - i)*10
+        #    logging.info(f"等待手动检查中...{wait_time_checkcourse}秒后结束")
 
         time.sleep(0.5)
         # 使用WebDriverWait来等待下一个元素出现
@@ -618,53 +562,6 @@ def auto_elect_course(username, password, course_number, max_retries):
                         return_info_status = True  # 设置返回信息状态为True，退出循环
                 except Exception as e:
                     logging.error(f"发生错误: {e}")
-            """
-            try:
-                # 定位结果框
-                wait = WebDriverWait(driver, 10)
-                result_dialog = wait.until(
-                    EC.presence_of_element_located((By.XPATH, '//div[@role="dialog" and @aria-label="结果"]'))
-                )
-                logging.info("结果对话框已定位")
-
-                # 定位到具体的结果信息内容
-                result_text = result_dialog.find_element(By.XPATH, './/div[@class="edu-dialog_body"]/div').text
-                logging.info(f"获取到的结果信息: {result_text}")
-
-                # 判断结果信息
-                if "选课成功" in result_text:
-                    logging.info("检测到选课成功消息")
-                    print(f"选课结果：{result_text}")
-
-                    # 定位关闭按钮并点击
-                    close_button = result_dialog.find_element(By.XPATH, './/button[contains(@class, "el-button--default") and span[text()="关闭"]]')
-                    close_button.click()
-                    logging.info("点击关闭按钮，退出程序")
-                    success = True  # 设置成功标志，退出循环
-                elif "保存课程中" in result_text:
-                    logging.info("检测到保存课程中消息，继续等待")
-
-                else:
-                    logging.warning("未检测到选课成功消息")
-                    print(f"选课结果：{result_text}")
-
-                    # 定位关闭按钮并点击
-                    close_button = result_dialog.find_element(By.XPATH, './/button[contains(@class, "el-button--default") and span[text()="关闭"]]')
-                    close_button.click()
-                    logging.info("点击关闭按钮，继续运行程序")
-
-                    # 等待一段时间后重试
-                    sleep_time=random.randint(3,6)
-                    time.sleep(sleep_time)
-                    logging.info(f"等待{sleep_time}秒后重试")
-                    
-
-            except Exception as e:
-                logging.error(f"处理结果框时发生错误: {e}")
-                # 等待一段时间后重试
-                sleep_time=random.randint(3,6)
-                time.sleep(sleep_time)
-                logging.info(f"等待{sleep_time}秒后重试")"""
 
         if not success:
             logging.error(f"在尝试了 {max_retries} 次后，仍未成功选课。请手动检查或稍后重试。")
@@ -677,7 +574,195 @@ def auto_elect_course(username, password, course_number, max_retries):
         driver.quit()
     else:
         print("拒绝使用！")
-    
+
+def search_and_add_course(course_number, driver, wait, highlight):
+    # 4.1 定位课程并添加到选课列表：默认值（计划内课程） v0.2.1版本改进
+    try:
+        # 序号
+        target_course_number = course_number[:-2]  # 课程类别由 course_number 去除后两位构成
+        logging.info(f"目标课程序号: {target_course_number}")
+
+        # 检查是否在 iframe 中
+        iframes = driver.find_elements(By.TAG_NAME, "iframe")
+        if iframes:
+            logging.info(f"页面中存在 {len(iframes)} 个 iframe，尝试切换到 iframe")
+            driver.switch_to.frame(iframes[0])  # 假设目标 iframe 是第一个
+
+        # 尝试定位目标课程行
+        try:
+            target_row = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, f'//tr[.//span[normalize-space(text())="{target_course_number}"]]')
+                )
+            )
+            logging.info(f"已成功定位到序号为 {target_course_number} 的行元素")
+            
+            # 打印整个 <tr> 元素的 HTML
+            print(target_row.get_attribute("outerHTML"))
+
+            # 定位复选框的父级 <label> 并点击
+            checkbox_label = target_row.find_element(By.XPATH, './/label[contains(@class, "el-checkbox")]')
+            logging.info("已定位到复选框的父级标签")
+
+            # 滚动到复选框并确保可见
+            driver.execute_script("arguments[0].scrollIntoView(true);", checkbox_label)
+
+            # 高亮显示复选框父级标签并点击
+            highlight(checkbox_label)
+            checkbox_label.click()
+            logging.info(f"已点击序号为 {target_course_number} 的行中的复选框")
+
+        except: #4.2 通识选修课（人文经典与审美素养）
+            # 如果未找到目标课程，尝试跳转到选修课界面
+            logging.warning(f"未找到序号为 {target_course_number} 的课程，跳转到选修课界面（人文经典）")
+
+            # 切回主内容（如果之前切换到了 iframe）
+            if iframes:
+                driver.switch_to.default_content()
+
+            # 定位并点击 "通识选修课" 按钮
+            elective_button = wait.until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, '//span[@class="el-radio-button__inner" and contains(text(), "通识选修课")]')
+                )
+            )
+            logging.info("已定位到 '通识选修课' 按钮")
+            elective_button.click()
+            logging.info("已点击 '通识选修课' 按钮，跳转至选修课界面")
+
+            # 尝试定位选修课-人文经典与审美素养中是否有目标课程
+            # 尝试定位目标课程行
+            try:
+                target_row = wait.until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, f'//tr[.//div[contains(text(), "{target_course_number}")]]')
+                    )
+                )
+                logging.info(f"已成功定位到序号为 {target_course_number} 的行元素")
+                
+                # 打印整个 <tr> 元素的 HTML
+                print(target_row.get_attribute("outerHTML"))
+
+                # 定位复选框的父级 <label> 并点击
+                checkbox_label = target_row.find_element(By.XPATH, './/label[contains(@class, "el-checkbox")]')
+                logging.info("已定位到复选框的父级标签")
+
+                # 滚动到复选框并确保可见
+                driver.execute_script("arguments[0].scrollIntoView(true);", checkbox_label)
+
+                # 高亮显示复选框父级标签并点击
+                highlight(checkbox_label)
+                checkbox_label.click()
+                logging.info(f"已点击序号为 {target_course_number} 的行中的复选框")
+
+            except:#4.3 通识选修课（工程能力与创新思维）
+                target_tab = wait.until(
+                    EC.element_to_be_clickable(
+                        (By.ID, "tab-工程能力与创新思维")  # 使用 id 定位
+                    )
+                )
+                logging.info("已定位到 '选修课-工程能力与创新思维'")
+                target_tab.click()
+                # 尝试定位选修课-工程能力与创新思维中是否有目标课程
+                # 尝试定位目标课程行
+                try:
+                    target_row = wait.until(
+                        EC.presence_of_element_located(
+                            (By.XPATH, f'//tr[.//div[contains(text(), "{target_course_number}")]]')
+                        )
+                    )
+                    logging.info(f"已成功定位到序号为 {target_course_number} 的行元素")
+                    
+                    # 打印整个 <tr> 元素的 HTML
+                    print(target_row.get_attribute("outerHTML"))
+
+                    # 定位复选框的父级 <label> 并点击
+                    checkbox_label = target_row.find_element(By.XPATH, './/label[contains(@class, "el-checkbox")]')
+                    logging.info("已定位到复选框的父级标签")
+
+                    # 滚动到复选框并确保可见
+                    driver.execute_script("arguments[0].scrollIntoView(true);", checkbox_label)
+
+                    # 高亮显示复选框父级标签并点击
+                    highlight(checkbox_label)
+                    checkbox_label.click()
+                    logging.info(f"已点击序号为 {target_course_number} 的行中的复选框")
+
+                except:
+                    #4.4 通识选修课（社会发展与国际视野）
+                    target_tab = wait.until(
+                        EC.element_to_be_clickable(
+                            (By.ID, "tab-社会发展与国际视野")  # 使用 id 定位
+                        )
+                    )
+                    logging.info("已定位到 '选修课-社会发展与国际视野'")
+                    target_tab.click()
+                    # 尝试定位选修课-社会发展与国际视野中是否有目标课程
+                    # 尝试定位目标课程行
+                    try:
+                        target_row = wait.until(
+                            EC.presence_of_element_located(
+                                (By.XPATH, f'//tr[.//div[contains(text(), "{target_course_number}")]]')
+                            )
+                        )
+                        logging.info(f"已成功定位到序号为 {target_course_number} 的行元素")
+                        
+                        # 打印整个 <tr> 元素的 HTML
+                        print(target_row.get_attribute("outerHTML"))
+
+                        # 定位复选框的父级 <label> 并点击
+                        checkbox_label = target_row.find_element(By.XPATH, './/label[contains(@class, "el-checkbox")]')
+                        logging.info("已定位到复选框的父级标签")
+
+                        # 滚动到复选框并确保可见
+                        driver.execute_script("arguments[0].scrollIntoView(true);", checkbox_label)
+
+                        # 高亮显示复选框父级标签并点击
+                        highlight(checkbox_label)
+                        checkbox_label.click()
+                        logging.info(f"已点击序号为 {target_course_number} 的行中的复选框")
+
+                    except:
+                        #4.5 通识选修课（科学探索与生命关怀）
+                        target_tab = wait.until(
+                            EC.element_to_be_clickable(
+                                (By.ID, "tab-科学探索与生命关怀")  # 使用 id 定位
+                            ) 
+                        )
+                        logging.info("已定位到 '选修课-科学探索与生命关怀'")
+                        target_tab.click()
+                        # 尝试定位选修课-科学探索与生命关怀中是否有目标课程
+                        # 尝试定位目标课程行
+                        target_row = wait.until(
+                            EC.presence_of_element_located(
+                                (By.XPATH, f'//tr[.//div[contains(text(), "{target_course_number}")]]')
+                            )
+                        )
+                        logging.info(f"已成功定位到序号为 {target_course_number} 的行元素")
+                        
+                        # 打印整个 <tr> 元素的 HTML
+                        print(target_row.get_attribute("outerHTML"))
+
+                        # 定位复选框的父级 <label> 并点击
+                        checkbox_label = target_row.find_element(By.XPATH, './/label[contains(@class, "el-checkbox")]')
+                        logging.info("已定位到复选框的父级标签")
+
+                        # 滚动到复选框并确保可见
+                        driver.execute_script("arguments[0].scrollIntoView(true);", checkbox_label)
+
+                        # 高亮显示复选框父级标签并点击
+                        highlight(checkbox_label)
+                        checkbox_label.click()
+                        logging.info(f"已点击序号为 {target_course_number} 的行中的复选框")
+                            
+        # 如果需要切回主内容
+        if iframes:
+            driver.switch_to.default_content()
+
+    except:
+        feedback = "，请检查页面是否正常或向开发者反馈:https://github.com/boatchanting/Tongji-electcourse2/issues"
+        logging.error(f"在定位课程并添加到选课列表时发生错误，请检查课号是否输入错误，{feedback}")
+
 # 主程序入口
 if __name__ == '__main__':
     app = QApplication(sys.argv)
