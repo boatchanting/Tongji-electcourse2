@@ -73,7 +73,7 @@ pip install selenium==4.25.0 PyQt5==5.15.11
 ### 3. 运行程序
 执行以下命令启动程序：
 ```sh
-python auto_select_course.py
+python auto_elect_course.py
 ```
 
 ## 其他说明
