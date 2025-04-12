@@ -1,15 +1,209 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>测试链接</title>
+    <title>Windows 11 Style Form with Theme Switch</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 400px;
+            max-width: 100%;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 5px;
+            display: block;
+            transition: color 0.3s;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #81D4FA;
+            border-radius: 10px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s, background-color 0.3s;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            border: 2px solid #81D4FA;
+            border-radius: 10px;
+            font-size: 14px;
+            resize: none;
+            box-sizing: border-box;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #B2EBF2, #81D4FA);
+            color: #333;
+            font-weight: 500;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button:hover {
+            background-color: #81D4FA;
+        }
+
+        button:active {
+            background-color: #4FC3F7;
+        }
+
+        /* Night Mode Styles */
+        body.night-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        body.night-mode .container {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        body.night-mode label {
+            color: #e0e0e0;
+        }
+
+        body.night-mode input[type="text"],
+        body.night-mode input[type="password"],
+        body.night-mode textarea {
+            background-color: #333;
+            border-color: #4FC3F7;
+            color: #e0e0e0;
+        }
+
+        body.night-mode button {
+            background: linear-gradient(135deg, #4FC3F7, #81D4FA);
+            color: #e0e0e0;
+        }
+
+        body.night-mode button:hover {
+            background-color: #81D4FA;
+        }
+
+        body.night-mode button:active {
+            background-color: #B2EBF2;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            transition: color 0.3s;
+        }
+
+        body.night-mode .footer {
+            color: #aaa;
+        }
+
+        .footer a {
+            color: #0078d4;
+            text-decoration: none;
+        }
+
+        body.night-mode .footer a {
+            color: #4FC3F7;
+        }
+    </style>
 </head>
 <body>
-    <h1>测试链接</h1>
-    <ul>
-        <li><a href="docs/all.html">所有</a></li>
-        <li><a href="docs/some.html">部分</a></li>
-    </ul>
+    <div class="container">
+        <div class="form-group">
+            <label for="username">学号:</label>
+            <input type="text" id="username" placeholder="请输入学号">
+        </div>
+        <div class="form-group">
+            <label for="password">密码:</label>
+            <input type="password" id="password" placeholder="请输入密码">
+        </div>
+        <div class="form-group">
+            <label for="course-number">课程编号:</label>
+            <input type="text" id="course-number" placeholder="请输入课程编号">
+        </div>
+        <div class="form-group">
+            <label for="max-retries">最大重试次数:</label>
+            <input type="text" id="max-retries" placeholder="请输入最大重试次数">
+        </div>
+        <div class="form-group">
+            <label for="log">日志:</label>
+            <textarea id="log" readonly>
+！！！输入学号，密码，课程号，最大重试次数，点击开始即可开始自动选课！！！
+
+欢迎使用Tongji-electcourse2（以下简称“本程序”），请勿用于非法用途，仅供学习交流使用
+
+1. 本程序仅供学习和交流使用，请勿用于非法用途。
+2. 在使用过程中，所有的操作和行为都运行在您的**本地环境**中，我们不会收集、存储或上传任何个人信息。
+3. 用户在使用本程序时，应自行承担由此产生的一切后果和责任，包括但不限于数据丢失、系统故障、个人信息泄露等。
+4. 本程序不提供任何形式的担保，包括但不限于对程序的适用性、准确性和完整性的担保。
+5. 本程序的开发者和分发者不承担因使用本程序而引起的任何直接或间接损失和责任。
+6. 用户在使用本程序时，应遵守当地法律法规，不得利用本程序从事任何违法活动。
+7. 本程序中的任何更新、修改或终止，开发者有权不事先通知用户。
+8. 用户使用本程序即表示同意上述所有条款。
+            </textarea>
+        </div>
+        <div class="button-group">
+            <button id="start-button">开始</button>
+            <button id="stop-button">停止</button>
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <button id="theme-toggle">切换夜间模式</button>
+        </div>
+        <div class="footer">
+            该界面仅为展示界面，并不能提供应用服务，可前往【<a href="https://kkgithub.com/boatchanting/Tongji-electcourse2/releases/" target="_blank">下载页面</a>】下载
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('night-mode');
+            if (body.classList.contains('night-mode')) {
+                themeToggle.textContent = '切换白天模式';
+            } else {
+                themeToggle.textContent = '切换夜间模式';
+            }
+        });
+    </script>
 </body>
 </html>
