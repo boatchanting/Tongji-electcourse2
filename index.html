@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tongji-electcourse2 Demo</title>
+    <title>Tongji-electcourse2 Demo</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -143,6 +143,11 @@
         body.night-mode .footer a {
             color: #4FC3F7;
         }
+
+        .log-line {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 <body>
@@ -194,15 +199,107 @@
 
     <script>
         const themeToggle = document.getElementById('theme-toggle');
-        const body = document.body;
+        const startButton = document.getElementById('start-button');
+        const stopButton = document.getElementById('stop-button');
+        const logTextarea = document.getElementById('log');
+        let timeoutID = null;
+        let currentAttempt = 1;
+        let maxRetries = 0;
 
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('night-mode');
-            if (body.classList.contains('night-mode')) {
-                themeToggle.textContent = '切换白天模式';
-            } else {
-                themeToggle.textContent = '切换夜间模式';
+        // 日志格式化函数
+        function formatLog(level, message) {
+            const now = new Date();
+            const timestamp = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ` +
+                              `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')},${String(now.getMilliseconds()).padStart(3, '0')}`;
+            return `${timestamp} - ${level} - ${message}\n`;
+        }
+
+        // 模拟登录和初始化过程
+        function simulateInitialization(callback) {
+            const username = document.getElementById('username').value || '未输入';
+            const courseNumber = document.getElementById('course-number').value || '未输入';
+
+            const steps = [
+                () => logTextarea.value += formatLog('INFO', `用户输入的学号: ${username}`),
+                () => logTextarea.value += formatLog('INFO', `用户输入的课程编号: ${courseNumber}`),
+                () => logTextarea.value += formatLog('INFO', 'Edge浏览器已启动'),
+                () => logTextarea.value += formatLog('INFO', '打开1系统登录页面'),
+                () => logTextarea.value += formatLog('INFO', '定位用户名和密码输入框'),
+                () => logTextarea.value += formatLog('INFO', '填入用户名和密码'),
+                () => logTextarea.value += formatLog('INFO', '点击登录按钮'),
+                () => logTextarea.value += formatLog('INFO', '跳转选课界面'),
+                () => logTextarea.value += formatLog('INFO', '定位添加课程按钮'),
+                () => logTextarea.value += formatLog('INFO', '添加课程至选课列表中'),
+            ];
+
+            let stepIndex = 0;
+            const executeStep = () => {
+                if (stepIndex >= steps.length) {
+                    callback();
+                    return;
+                }
+                steps[stepIndex]();
+                stepIndex++;
+                timeoutID = setTimeout(executeStep, Math.random() * 1000);
+            };
+            executeStep();
+        }
+
+        // 开始尝试选课
+        function startAttempts() {
+            const attemptLog = () => {
+                if (currentAttempt > maxRetries) {
+                    logTextarea.value += formatLog('WARNING', '已达到最大重试次数，选课失败');
+                    return;
+                }
+
+                logTextarea.value += formatLog('INFO', `开始第${currentAttempt}次尝试（共${maxRetries}次）`);
+                logTextarea.scrollTop = logTextarea.scrollHeight;
+
+                const success = Math.random() < 0.2; // 20%的成功率
+                if (success) {
+                    logTextarea.value += formatLog('SUCCESS', '选课成功！恭喜您完成选课！');
+                } else {
+                    logTextarea.value += formatLog('INFO', '选课失败，准备进行下一次尝试...');
+                    currentAttempt++;
+                    timeoutID = setTimeout(attemptLog, Math.random() * 1000);
+                }
+            };
+
+            timeoutID = setTimeout(attemptLog, Math.random() * 1000);
+        }
+
+        // 开始按钮事件
+        startButton.addEventListener('click', () => {
+            if (timeoutID) return;
+
+            const retriesInput = document.getElementById('max-retries').value;
+            maxRetries = parseInt(retriesInput, 10);
+            if (isNaN(maxRetries) || maxRetries <= 0) {
+                alert('请输入有效的最大重试次数');
+                return;
             }
+
+            currentAttempt = 1;
+            logTextarea.value = ''; // 清空日志区
+            logTextarea.value += `！！！输入学号，密码，课程号，最大重试次数，点击开始即可开始自动选课！！！\n\n`; // 保留提示信息
+            simulateInitialization(() => startAttempts());
+        });
+
+        // 停止按钮事件
+        stopButton.addEventListener('click', () => {
+            clearTimeout(timeoutID);
+            timeoutID = null;
+            currentAttempt = 1;
+            logTextarea.value += formatLog('WARNING', '用户手动终止操作');
+        });
+
+        // 主题切换
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('night-mode');
+            themeToggle.textContent = document.body.classList.contains('night-mode') 
+                ? '切换白天模式' 
+                : '切换夜间模式';
         });
     </script>
 </body>
