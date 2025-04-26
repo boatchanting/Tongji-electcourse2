@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>辅助选课系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    /* ---------- 主题变量 ---------- */
+    :root {
+      --bg-color: #f0f2f5;
+      --card-bg: #ffffffcc;
+      --text-color: #2c3e50;
+      --accent: #0a84ff;
+      --shadow: rgba(0,0,0,0.1);
+      --font: "Segoe UI Variable","Segoe UI","Helvetica Neue",Arial,sans-serif;
+    }
+    .dark {
+      --bg-color: #1e1e1e;
+      --card-bg: #2a2a2acc;
+      --text-color: #e5e5e5;
+      --accent: #0a84ff;
+      --shadow: rgba(0,0,0,0.5);
+    }
+    .blue-theme { --accent: #2196f3; }
+    .green-theme { --accent: #4caf50; }
+    .purple-theme { --accent: #9c27b0; }
+
+    /* ---------- 全局 ---------- */
+    * { box-sizing: border-box; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0; padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    h2, h3 { margin: 0 0 10px; }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    button {
+      font-family: var(--font);
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    button:hover { background: shade(var(--accent), 0.9); transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button.delete-btn {
+      background: transparent;
+      color: #e74856;      /* 红色警告色 */
+      border: 1px solid #e74856;
+      border-radius: 6px;
+      padding: 8px 16px;
+      transition: background 0.2s, color 0.2s;
+    }
+    button.delete-btn:hover {
+      background: rgba(231,72,86,0.1);
+    }
+
+
+    input {
+      font-family: var(--font);
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th { background: var(--card-bg); }
+    tr:hover td { background: #f9f9f9; }
+
+    textarea {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      resize: vertical;
+      font-family: var(--font);
+    }
+
+    /* ---------- 全局：链接样式 ---------- */
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: var(--text-color);
+    }
+    a:active {
+      color: var(--shadow);
+    }
+
+    /* ---------- 主题切换区 ---------- */
+    .theme-toggle {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .theme-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: var(--card-bg);
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .theme-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--shadow); }
+
+    /* ---------- 登录居中 ---------- */
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 40px);
+    }
+
+    /* ---------- footer ---------- */
+    /* ---------- Footer ---------- */
+    footer {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 0 -4px 12px var(--shadow);
+      text-align: center;
+      font-size: 0.9em;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- Modal 样式 ---------- */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.3);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px var(--shadow);
+      width: 400px;
+      max-width: 90%;
+      padding: 20px;
+      animation: fadeIn 0.2s ease-out;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      margin: 0;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.2em;
+      cursor: pointer;
+      color: var(--text-color);
+    }
+    .modal-body { margin-top: 10px; }
+    .modal-footer { margin-top: 20px; text-align: right; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---------- 滚动条 ---------- */
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 6px;
+      border: 3px solid transparent;
+      background-clip: content-box;
+    }
+    ::-webkit-scrollbar-thumb:hover { filter: brightness(1.2); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+  </style>
+</head>
+<body>
+  <!-- 主题切换 -->
+  <div class="theme-toggle">
+    <div class="theme-btn" id="lightBtn">☀️</div>
+    <div class="theme-btn" id="darkBtn">🌙</div>
+    <div class="theme-btn" id="blueBtn">🌊</div>
+    <div class="theme-btn" id="greenBtn">🍃</div>
+    <div class="theme-btn" id="purpleBtn">🎨</div>
+  </div>
+
+  <!-- 登录界面 -->
+  <div id="login" class="login-wrapper">
+    <div class="card" style="max-width:360px; width:100%;">
+      <h2>登录</h2>
+      <div style="margin-top:10px;">
+        <label>学号：</label><br>
+        <input id="username" type="text" style="width:100%;"><br><br>
+        <label>密码：</label><br>
+        <input id="password" type="password" style="width:100%;"><br><br>
+        <label><input type="checkbox" id="agree" /> 我已同意 <a href="user_agreement.html" target="_blank">用户守则</a></label><br><br>
+        <button style="width:100%;" onclick="login()">登录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主界面 -->
+  <div id="main" style="display:none;">
+    <div class="card">
+      <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h2>选课任务管理</h2>
+        <button onclick="viewLogin()" style="background:transparent; color:var(--accent); box-shadow:none; padding:4px 8px;">查看登录信息</button>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <div>
+          <label>课程编号：</label><br>
+          <input id="course_no" type="text">
+        </div>
+        <div>
+          <label>最大重试次数：</label><br>
+          <input id="max_retry" type="number" value="10000" min="1" style="width:60px">
+        </div>
+        <div style="align-self:flex-end;">
+          <button onclick="addTask()">添加任务</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>最大重试</th>
+            <th>状态</th>
+            <th>操作</th>
+            <th>删除</th>        <!-- 删除任务 -->
+          </tr>
+        </thead>
+        <tbody id="tasks_body"></tbody>
+      </table>
+
+      <h3 style="margin-top:20px;">日志输出</h3>
+      <textarea id="log_area" rows="8" readonly></textarea>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <footer>
+    项目地址：<a href="https://github.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub</a>
+    <a href="https://kkgithub.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub镜像</a>
+  </footer>
+
+  <script>
+    // ---------- 主题逻辑 ----------
+    function setTheme(theme) {
+      document.body.className = theme;
+      localStorage.setItem('theme', theme);
+    }
+    function checkTimeTheme() {
+      const h = new Date().getHours();
+      return (h>=6 && h<18) ? '' : 'dark';
+    }
+    document.getElementById('lightBtn').onclick = ()=> setTheme('');
+    document.getElementById('darkBtn').onclick = ()=> setTheme('dark');
+    document.getElementById('blueBtn').onclick = ()=> setTheme('blue-theme');
+    document.getElementById('greenBtn').onclick = ()=> setTheme('green-theme');
+    document.getElementById('purpleBtn').onclick = ()=> setTheme('purple-theme');
+    setTheme(localStorage.getItem('theme') || checkTimeTheme());
+
+    // ---------- 与后端交互 ----------
+    let currentLogTask = null, logTimer = null;
+
+    async function login() {
+      if (!document.getElementById('agree').checked) {
+        alert('请先同意用户守则');
+        return;
+      }
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      if (await window.pywebview.api.login(u,p)) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('main').style.display = 'block';
+        refreshTasks();
+      } else {
+        alert('登录失败');
+      }
+    }
+
+    function viewLogin() {
+      clearInterval(logTimer);
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('login').style.display = 'flex';
+    }
+
+    async function addTask() {
+      const c = document.getElementById('course_no').value;
+      const r = document.getElementById('max_retry').value;
+      if (!c) return alert('请输入课程编号');
+      await window.pywebview.api.add_task(c,r);
+      refreshTasks();
+    }
+
+    async function startTask(id) {
+      await window.pywebview.api.start_task(id); refreshTasks();
+    }
+    async function stopTask(id) {
+      await window.pywebview.api.stop_task(id); refreshTasks();
+    }
+
+    async function refreshTasks() {
+    const tasks = await window.pywebview.api.get_tasks();
+    const tb = document.getElementById('tasks_body');
+    tb.innerHTML = '';
+    tasks.forEach(t => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${t.course_number}</td>
+        <td>${t.max_retries}</td>
+        <td>${t.status}</td>
+        <td>
+          <button onclick="startTask('${t.id}')">开始</button>
+          <button onclick="stopTask('${t.id}')">停止</button>
+          <button onclick="showLogs('${t.id}')">日志</button>
+        </td>
+        <td>
+          <button class="delete-btn" onclick="deleteTask('${t.id}')">删除</button>
+        </td>
+      `;
+      tb.appendChild(tr);
+    });
+  }
+
+  async function deleteTask(id) {// 删除任务
+    if (confirm('确定要删除这个任务吗？')) {
+      await window.pywebview.api.delete_task(id);
+      // 如果当前在看该任务日志，停止轮询
+      if (currentLogTask === id) {
+        clearInterval(logTimer);
+        currentLogTask = null;
+        document.getElementById('log_area').value = '';
+      }
+      refreshTasks();
+    }
+  }
+
+    function showLogs(tid) {
+      currentLogTask = tid; document.getElementById('log_area').value = '';
+      if (logTimer) clearInterval(logTimer);
+      logTimer = setInterval(async ()=>{
+        const lines = await window.pywebview.api.get_logs(currentLogTask);
+        if (lines.length) {
+          const area = document.getElementById('log_area');
+          lines.forEach(l=> area.value += l + '\n');
+          area.scrollTop = area.scrollHeight;
+        }
+      }, 500);
+    }
+  </script>
+</body>
+</html>
