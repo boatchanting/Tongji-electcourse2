@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>辅助选课系统</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    /* ---------- 主题变量 ---------- */
+    :root {
+      --bg-color: #f0f2f5;
+      --card-bg: #ffffffcc;
+      --text-color: #2c3e50;
+      --accent: #0a84ff;
+      --shadow: rgba(0,0,0,0.1);
+      --font: "Segoe UI Variable","Segoe UI","Helvetica Neue",Arial,sans-serif;
+    }
+    .dark {
+      --bg-color: #1e1e1e;
+      --card-bg: #2a2a2acc;
+      --text-color: #e5e5e5;
+      --accent: #0a84ff;
+      --shadow: rgba(0,0,0,0.5);
+    }
+    .blue-theme { --accent: #2196f3; }
+    .green-theme { --accent: #4caf50; }
+    .purple-theme { --accent: #9c27b0; }
+
+    /* ---------- 全局 ---------- */
+    * { box-sizing: border-box; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0; padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    h2, h3 { margin: 0 0 10px; }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    button {
+      font-family: var(--font);
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    button:hover { background: shade(var(--accent), 0.9); transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button.delete-btn {
+      background: transparent;
+      color: #e74856;      /* 红色警告色 */
+      border: 1px solid #e74856;
+      border-radius: 6px;
+      padding: 8px 16px;
+      transition: background 0.2s, color 0.2s;
+    }
+    button.delete-btn:hover {
+      background: rgba(231,72,86,0.1);
+    }
+
+
+    input {
+      font-family: var(--font);
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th { background: var(--card-bg); }
+    tr:hover td { background: #f9f9f9; }
+
+    textarea {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      resize: vertical;
+      font-family: var(--font);
+    }
+
+    /* ---------- 全局：链接样式 ---------- */
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: var(--text-color);
+    }
+    a:active {
+      color: var(--shadow);
+    }
+
+    /* ---------- 主题切换区 ---------- */
+    .theme-toggle {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .theme-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: var(--card-bg);
+      box-shadow: 0 4px 12px var(--shadow);
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+    .theme-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--shadow); }
+
+    /* ---------- 登录居中 ---------- */
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 40px);
+    }
+
+    /* ---------- footer ---------- */
+    /* ---------- Footer ---------- */
+    footer {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 0 -4px 12px var(--shadow);
+      text-align: center;
+      font-size: 0.9em;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ---------- Modal 样式 ---------- */
+    .modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px var(--shadow);
+    width: 400px;
+    max-width: 90%;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }
+
+    .modal-header h3 {
+    margin: 0;
+    }
+
+    .modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: var(--text-color);
+    }
+
+    .modal-body { margin-top: 10px; }
+
+    .modal-footer { margin-top: 20px; text-align: right; }
+
+    @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+    }
+
+
+    /* ---------- 滚动条 ---------- */
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 6px;
+      border: 3px solid transparent;
+      background-clip: content-box;
+    }
+    ::-webkit-scrollbar-thumb:hover { filter: brightness(1.2); }
+    ::-webkit-scrollbar-corner { background: transparent; }
+  </style>
+</head>
+<body>
+
+  <!-- 主题切换 -->
+  <div class="theme-toggle">
+    <div class="theme-btn" id="lightBtn">☀️</div>
+    <div class="theme-btn" id="darkBtn">🌙</div>
+    <div class="theme-btn" id="blueBtn">🌊</div>
+    <div class="theme-btn" id="greenBtn">🍃</div>
+    <div class="theme-btn" id="purpleBtn">🎨</div>
+  </div>
+
+  <!-- 操作引导模态框 -->
+<div class="modal-overlay" id="tutorial-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>欢迎使用辅助选课系统</h3>
+        <button class="modal-close" onclick="closeTutorial()">×</button>
+      </div>
+      <div class="modal-body" id="tutorial-content">
+        <p>步骤1: 请输入学号和密码以登录系统。</p>
+      </div>
+      <div class="modal-footer">
+        <button onclick="nextStep()">下一步</button>
+      </div>
+    </div>
+  </div>
+  
+
+  <!-- 登录界面 -->
+  <div id="login" class="login-wrapper">
+    <div class="card" style="max-width:360px; width:100%;">
+      <h2>登录</h2>
+      <div style="margin-top:10px;">
+        <label>学号：</label><br>
+        <input id="username" type="text" style="width:100%;"><br><br>
+        <label>密码：</label><br>
+        <input id="password" type="password" style="width:100%;"><br><br>
+        <label><input type="checkbox" id="agree" /> 我已同意 <a href="UI_v1/user_agreement.html">用户守则</a></label><br><br>
+        <button style="width:100%;" onclick="login()">登录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主界面 -->
+  <div id="main" style="display:none;">
+    <div class="card">
+      <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h2>选课任务管理</h2>
+        <button onclick="viewLogin()" style="background:transparent; color:var(--accent); box-shadow:none; padding:4px 8px;">查看登录信息</button>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <div>
+          <label>课程编号：</label><br>
+          <input id="course_no" type="text">
+        </div>
+        <div>
+          <label>最大重试次数：</label><br>
+          <input id="max_retry" type="number" value="10000" min="1" style="width:60px">
+        </div>
+        <div style="align-self:flex-end;">
+          <button onclick="addTask()">添加任务</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>最大重试</th>
+            <th>状态</th>
+            <th>操作</th>
+            <th>删除</th>
+          </tr>
+        </thead>
+        <tbody id="tasks_body"></tbody>
+      </table>
+
+      <h3 style="margin-top:20px;">日志输出</h3>
+      <textarea id="log_area" rows="8" readonly></textarea>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <footer>
+    <p>该界面仅为展示界面，并不能提供应用服务，可前往【<a href="https://github.com/boatchanting/Tongji-electcourse2/releases/" target="_blank">下载页面</a>或<a href="https://kkgithub.com/boatchanting/Tongji-electcourse2/releases/" target="_blank">下载页面镜像</a>】下载</p>
+    项目地址：<a href="https://github.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub</a>
+    <a href="https://kkgithub.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub镜像</a>
+  </footer>
+
+  <script>
+    // ---------- 主题逻辑 ----------
+    function setTheme(theme) {
+      document.body.className = theme;
+      localStorage.setItem('theme', theme);
+    }
+    function checkTimeTheme() {
+      const h = new Date().getHours();
+      return (h>=6 && h<18) ? '' : 'dark';
+    }
+    document.getElementById('lightBtn').onclick = ()=> setTheme('');
+    document.getElementById('darkBtn').onclick = ()=> setTheme('dark');
+    document.getElementById('blueBtn').onclick = ()=> setTheme('blue-theme');
+    document.getElementById('greenBtn').onclick = ()=> setTheme('green-theme');
+    document.getElementById('purpleBtn').onclick = ()=> setTheme('purple-theme');
+    setTheme(localStorage.getItem('theme') || checkTimeTheme());
+
+    let tutorialStep = 0;
+    const tutorialContent = [
+    "步骤1: 请输入1系统学号和密码以登录系统，便于后续软件自行进行1系统的登录和选课操作。",
+    "步骤2: 登录后，输入课程编号和最大重试次数，点击添加任务。",
+    "步骤3: 点击“开始”按钮来启动任务，点击“停止”来关闭任务。",
+    "步骤4: 查看选课日志，了解每次选课尝试的结果。",
+    "步骤5: 完成选课后，您可以查看任务的状态，删除不需要的任务。",
+    "我已了解所有操作，Tongji-electcourse2 祝您选课愉快！"
+    ];
+
+    function nextStep() {
+    tutorialStep++;
+    if (tutorialStep < tutorialContent.length) {
+        document.getElementById('tutorial-content').innerHTML = tutorialContent[tutorialStep];
+    } else {
+        closeTutorial(); // 完成引导后关闭模态框
+    }
+    }
+
+    function closeTutorial() {
+    document.getElementById('tutorial-modal').classList.remove('active');
+    }
+
+    function openTutorial() {
+    document.getElementById('tutorial-modal').classList.add('active');
+    }
+
+    // 打开操作演示模态框（例如用户首次登录时调用）
+    openTutorial();
+
+    // ---------- 模拟选课过程 ----------
+    let tasks = [];
+    let currentLogTask = null;
+    let logTimer = null;
+
+    // 登录函数
+    function login() {
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      if (u && p) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('main').style.display = 'block';
+        refreshTasks();
+      } else {
+        alert('请输入用户名和密码');
+      }
+    }
+
+    // 显示登录界面
+    function viewLogin() {
+      clearInterval(logTimer);
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('login').style.display = 'flex';
+    }
+
+    // 添加任务函数
+    function addTask() {
+      const c = document.getElementById('course_no').value;
+      const r = document.getElementById('max_retry').value;
+      if (!c) return alert('请输入课程编号');
+      tasks.push({
+        id: Date.now(),
+        course_number: c,
+        max_retries: r,
+        status: '等待',
+      });
+      refreshTasks();
+    }
+
+    // 更新任务列表
+    function refreshTasks() {
+      const tb = document.getElementById('tasks_body');
+      tb.innerHTML = '';
+      tasks.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${t.course_number}</td>
+          <td>${t.max_retries}</td>
+          <td>${t.status}</td>
+          <td>
+            <button onclick="startTask('${t.id}')">开始</button>
+            <button onclick="stopTask('${t.id}')">停止</button>
+            <button onclick="showLogs('${t.id}')">日志</button>
+          </td>
+          <td>
+            <button class="delete-btn" onclick="deleteTask('${t.id}')">删除</button>
+          </td>
+        `;
+        tb.appendChild(tr);
+      });
+    }
+
+    // 启动任务
+    function startTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      task.status = '正在进行';
+      refreshTasks();
+      simulateTask(task);
+    }
+
+    // 停止任务
+    function stopTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      task.status = '已停止';
+      refreshTasks();
+    }
+
+    // 删除任务
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      if (currentLogTask === id) {
+        clearInterval(logTimer);
+        currentLogTask = null;
+        document.getElementById('log_area').value = '';
+      }
+      refreshTasks();
+    }
+
+    // 显示任务日志
+    function showLogs(tid) {
+      currentLogTask = tid;
+      document.getElementById('log_area').value = '';
+      if (logTimer) clearInterval(logTimer);
+      logTimer = setInterval(() => {
+        const task = tasks.find(t => t.id === tid);
+        if (task) {
+          simulateLogging(task);
+        }
+      }, 500);
+    }
+
+    // 模拟日志输出
+    function simulateLogging(task) {
+      const logArea = document.getElementById('log_area');
+      const randomInterval = (Math.random() * 0.3 + 0.3).toFixed(2); // 随机时间间隔 0.3s - 0.6s
+      const currentTime = new Date().toLocaleTimeString();
+
+      logArea.value += `[${currentTime}] 课号:${task.course_number}，最大重试次数:${task.max_retries}\n`;
+      logArea.value += `[${currentTime}] 正在登录1系统\n`;
+      logArea.value += `[${currentTime}] 正在登录选课网站\n`;
+      logArea.value += `[${currentTime}] 正在查找课程\n`;
+      logArea.value += `[${currentTime}] 课程已添加至选课列表\n`;
+
+      const success = Math.random() < 0.1; // 选课成功率10%
+      const result = success ? '成功' : '失败';
+      const retries = task.max_retries--;
+      logArea.value += `[${currentTime}] 开始第${task.max_retries}次尝试\n`;
+      logArea.value += `[${currentTime}] 第${task.max_retries}次尝试【${result}】\n`;
+      logArea.value += `[${currentTime}] ${success ? '选课结束，进程退出' : `等待3s进行下一次选课`}\n`;
+
+      logArea.scrollTop = logArea.scrollHeight; // 自动滚动到底部
+
+      if (!success && retries > 0) {
+        setTimeout(() => simulateLogging(task), randomInterval * 1000);
+      } else {
+        clearInterval(logTimer);
+      }
+    }
+  </script>
+</body>
+</html>
