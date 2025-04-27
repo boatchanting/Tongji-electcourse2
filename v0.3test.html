@@ -146,7 +146,6 @@
     }
 
     /* ---------- footer ---------- */
-    /* ---------- Footer ---------- */
     footer {
       position: fixed;
       bottom: 20px;
@@ -171,46 +170,53 @@
 
     /* ---------- Modal 样式 ---------- */
     .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.3);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
     }
+
     .modal-overlay.active { display: flex; }
+
     .modal {
-      background: var(--card-bg);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      box-shadow: 0 8px 24px var(--shadow);
-      width: 400px;
-      max-width: 90%;
-      padding: 20px;
-      animation: fadeIn 0.2s ease-out;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px var(--shadow);
+    width: 400px;
+    max-width: 90%;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
     }
+
     .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     }
+
     .modal-header h3 {
-      margin: 0;
+    margin: 0;
     }
+
     .modal-close {
-      background: transparent;
-      border: none;
-      font-size: 1.2em;
-      cursor: pointer;
-      color: var(--text-color);
+    background: transparent;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: var(--text-color);
     }
+
     .modal-body { margin-top: 10px; }
+
     .modal-footer { margin-top: 20px; text-align: right; }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
     }
 
     /* ---------- 滚动条 ---------- */
@@ -239,6 +245,23 @@
     <div class="theme-btn" id="purpleBtn">🎨</div>
   </div>
 
+  <!-- 操作引导模态框 -->
+  <div class="modal-overlay" id="tutorial-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>欢迎使用Tongji-electcourse2</h3>
+        <button class="modal-close" onclick="closeTutorial()">×</button>
+      </div>
+      <div class="modal-body" id="tutorial-content">
+        <p>步骤1: 请输入学号和密码以登录系统。</p>
+      </div>
+      <div class="modal-footer">
+        <button onclick="nextStep()">下一步</button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- 登录界面 -->
   
   <div id="login" class="login-wrapper">
@@ -249,7 +272,9 @@
         <input id="username" type="text" style="width:100%;"><br><br>
         <label>密码：</label><br>
         <input id="password" type="password" style="width:100%;"><br><br>
-        <label><input type="checkbox" id="agree" /> 我已同意 <a href="UI_v1/user_agreement.html">用户守则</a></label><br><br>
+        <label><input type="checkbox" id="agree" /> 我已同意 <a href="UI_v1/user_agreement.html">用户守则</a>
+          <a href="javascript:void(0)" onclick="openTutorial()">使用指南</a>
+          </label> <br><br> <!-- <a href="UI_v1/demo.html">使用指南</a> -->
         <button style="width:100%;" onclick="login()">登录</button>
       </div>
     </div>
@@ -317,7 +342,49 @@
     document.getElementById('purpleBtn').onclick = ()=> setTheme('purple-theme');
     setTheme(localStorage.getItem('theme') || checkTimeTheme());
 
-    // ---------- 与后端交互 ----------
+    // ---------- 操作引导 ----------
+    let tutorialStep = 5;
+    const tutorialContent = [
+      "步骤1: 请授权1系统学号和密码以登录系统，便于后续软件<strong>自动</strong>进行1系统的登录和选课操作。",
+    "步骤2: 登录后，输入课程编号和最大重试次数，点击添加任务。",
+    "步骤3: 点击“开始”按钮来启动任务，点击“停止”来关闭任务。",
+    "步骤4: 查看选课日志，了解每次选课尝试的结果。",
+    "步骤5: 完成选课后，您可以查看任务的状态，删除不需要的任务。",
+    "我已了解所有操作，Tongji-electcourse2 祝您选课愉快！"
+    ];
+
+    function nextStep() {
+      tutorialStep++;
+      if (tutorialStep < tutorialContent.length) {
+        document.getElementById('tutorial-content').innerHTML = tutorialContent[tutorialStep];
+      } else {
+        closeTutorial(); // 完成引导后关闭模态框
+      }
+    }
+
+    function closeTutorial() {
+      document.getElementById('tutorial-modal').classList.remove('active');
+    }
+
+    function openTutorial() {
+      document.getElementById('tutorial-modal').classList.add('active');
+    }
+
+    // 打开操作演示模态框（例如用户首次登录时调用）
+    openTutorial();
+
+    // 重新打开操作演示模态框
+    function openTutorial() {
+      tutorialStep = 0; // 重置步骤
+      document.getElementById('tutorial-content').innerHTML = tutorialContent[tutorialStep];
+      document.getElementById('tutorial-modal').classList.add('active'); // 显示模态框
+    }
+
+
+
+    // ----------------------------------
+    // ---------- 与后端交互 -------------
+    // ----------------------------------
     let currentLogTask = null, logTimer = null;
 
     async function login() {
