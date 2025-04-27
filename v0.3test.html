@@ -343,13 +343,14 @@
     setTheme(localStorage.getItem('theme') || checkTimeTheme());
 
     // ---------- 操作引导 ----------
-    let tutorialStep = 5;
+    let tutorialStep = 0;
     const tutorialContent = [
       "步骤1: 请授权1系统学号和密码以登录系统，便于后续软件<strong>自动</strong>进行1系统的登录和选课操作。",
     "步骤2: 登录后，输入课程编号和最大重试次数，点击添加任务。",
     "步骤3: 点击“开始”按钮来启动任务，点击“停止”来关闭任务。",
     "步骤4: 查看选课日志，了解每次选课尝试的结果。",
     "步骤5: 完成选课后，您可以查看任务的状态，删除不需要的任务。",
+    "点击界面上方的五个小按钮以切换主题。",
     "我已了解所有操作，Tongji-electcourse2 祝您选课愉快！"
     ];
 
@@ -372,6 +373,13 @@
 
     // 打开操作演示模态框（例如用户首次登录时调用）
     openTutorial();
+
+    // 假设用户首次访问时触发操作演示
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!localStorage.getItem('tutorialCompleted')) {
+        openTutorial();
+      }
+    });
 
     // 重新打开操作演示模态框
     function openTutorial() {
