@@ -256,7 +256,8 @@
         <p>步骤1: 请输入学号和密码以登录系统。</p>
       </div>
       <div class="modal-footer">
-        <button onclick="nextStep()">下一步</button>
+        <button id="prevBtn" onclick="prevStep()" disabled>上一步</button>
+        <button id="nextBtn" onclick="nextStep()">下一步</button>
       </div>
     </div>
   </div>
@@ -354,21 +355,52 @@
     "您已了解所有操作，Tongji-electcourse2 祝您选课愉快！"
     ];
 
-    function nextStep() {
-      tutorialStep++;
-      if (tutorialStep < tutorialContent.length) {
-        document.getElementById('tutorial-content').innerHTML = tutorialContent[tutorialStep];
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const contentEl = document.getElementById('tutorial-content');
+
+    function updateButtons() {
+      if (tutorialStep === 0) {
+        prevBtn.style.display = 'none';        // 隐藏“上一步”，第一步
       } else {
-        closeTutorial(); // 完成引导后关闭模态框
+        prevBtn.style.display = 'inline-block';// 显示“上一步”
       }
+
+      if (tutorialStep === tutorialContent.length - 1) {
+        nextBtn.textContent = '完成';// 最后一步显示“完成”
+      } else {
+        nextBtn.textContent = '下一步';
+      }
+    }
+
+    function openTutorial() {
+      tutorialStep = 0;
+      contentEl.innerHTML = `<p>${tutorialContent[tutorialStep]}</p>`;
+      updateButtons();
+      document.getElementById('tutorial-modal').classList.add('active');
     }
 
     function closeTutorial() {
       document.getElementById('tutorial-modal').classList.remove('active');
     }
 
-    function openTutorial() {
-      document.getElementById('tutorial-modal').classList.add('active');
+    function nextStep() {
+      if (tutorialStep < tutorialContent.length - 1) {
+        tutorialStep++;
+        contentEl.innerHTML = `<p>${tutorialContent[tutorialStep]}</p>`;
+        updateButtons();
+      } else {
+        // 最后一页点击“完成”就关闭
+        closeTutorial();
+      }
+    }
+
+    function prevStep() {
+      if (tutorialStep > 0) {
+        tutorialStep--;
+        contentEl.innerHTML = `<p>${tutorialContent[tutorialStep]}</p>`;
+        updateButtons();
+      }
     }
 
     // 打开操作演示模态框（例如用户首次登录时调用）
