@@ -51,6 +51,9 @@
       color: var(--text-color);
       margin: 0; padding: 20px;
       transition: background 0.3s, color 0.3s;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
     h2, h3 { margin: 0 0 10px; }
 
@@ -172,7 +175,7 @@
       background: var(--card-bg);
       backdrop-filter: blur(10px);
       padding: 10px 20px;
-      border-radius: 12px 12px 0 0;
+      border-radius: 12px;
       box-shadow: 0 -4px 12px var(--shadow);
       text-align: center;
       font-size: 0.9em;
