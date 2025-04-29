@@ -219,6 +219,54 @@
     to { opacity: 1; transform: translateY(0); }
     }
 
+    /* 操作引导模态框 */
+    #guide-modal.guide-modal-overlay {
+      position: fixed; top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5);
+      display: none; align-items: center; justify-content: center;
+      z-index: 10000;
+    }
+    #guide-modal.guide-modal-overlay.active {
+      display: flex;
+    }
+    .guide-modal {
+      background: #ffffffcc;
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      width: 400px; max-width: 90%; padding: 20px;
+      animation: guide-fadeIn 0.2s ease-out;
+      font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif;
+      color: #2c3e50;
+    }
+    .guide-modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .guide-modal-close {
+      background: transparent; border: none; font-size: 1.2em;
+      cursor: pointer; color: #2c3e50;
+    }
+    .guide-modal-body {
+      margin-top: 10px;
+    }
+    .guide-modal-footer {
+      margin-top: 20px; text-align: right;
+    }
+    .guide-btn {
+      padding: 6px 12px; margin-left: 8px;
+      border: none; border-radius: 6px; cursor: pointer;
+    }
+    .guide-prevBtn {
+      background: #ccc;
+    }
+    .guide-nextBtn {
+      background: var(--accent); color: #fff;
+    }
+    @keyframes guide-fadeIn {
+      from { opacity:0; transform: translateY(-10px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
     /* Q&A 模态框 */
     #qa-modal.modal-overlay {
       position: fixed;
@@ -300,18 +348,18 @@
   </div>
 
   <!-- 操作引导模态框 -->
-  <div class="modal-overlay" id="tutorial-modal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>欢迎使用Tongji-electcourse2</h3>
-        <button class="modal-close" onclick="closeTutorial()">×</button>
+  <div id="guide-modal" class="guide-modal-overlay">
+    <div class="guide-modal">
+      <div class="guide-modal-header">
+        <h3>欢迎使用辅助选课系统</h3>
+        <button id="guide-closeBtn" class="guide-modal-close">×</button>
       </div>
-      <div class="modal-body" id="tutorial-content">
-        <p>步骤1: 请输入学号和密码以登录系统。</p>
+      <div id="guide-content" class="guide-modal-body">
+        <!-- 文本由 JS 填充 -->
       </div>
-      <div class="modal-footer">
-        <button id="prevBtn" onclick="prevStep()" disabled>上一步</button>
-        <button id="nextBtn" onclick="nextStep()">下一步</button>
+      <div class="guide-modal-footer">
+        <button id="guide-prevBtn" class="guide-btn guide-prevBtn">上一步</button>
+        <button id="guide-nextBtn" class="guide-btn guide-nextBtn">下一步</button>
       </div>
     </div>
   </div>
@@ -344,7 +392,7 @@
         <label>密码：</label><br>
         <input id="password" type="password" style="width:100%;"><br><br>
         <label><input type="checkbox" id="agree" /> 我已同意 <a href="UI_v1/user_agreement.html">用户守则</a>
-          <a href="javascript:void(0)" onclick="openTutorial()">使用指南</a>
+          <a href="javascript:void(0)" id="guide-showLink">使用指南</a>
           <a href="javascript:void(0)" onclick="openQA()">Q&A</a>
           </label> <br><br> <!-- <a href="UI_v1/demo.html">使用指南</a> -->
         <button style="width:100%;" onclick="login()">登录</button>
@@ -415,81 +463,68 @@
     setTheme(localStorage.getItem('theme') || checkTimeTheme());
 
     // ---------- 操作引导 ----------
-    let tutorialStep = 0;
-    const tutorialContent = [
-      "步骤1: 请授权1系统学号和密码以登录系统，便于后续软件<strong>自动</strong>进行1系统的登录和选课操作。",
-    "步骤2: 登录后，输入课程编号和最大重试次数，点击添加任务。",
-    "步骤3: 点击“开始”按钮来启动任务，点击“停止”来关闭任务。",
-    "步骤4: 查看选课日志，了解每次选课尝试的结果。",
-    "步骤5: 完成选课后，您可以查看任务的状态，删除不需要的任务。",
-    "点击界面上方的五个小按钮以切换主题。",
-    "您已了解所有操作，Tongji-electcourse2 祝您选课愉快！"
-    ];
+    document.addEventListener('DOMContentLoaded', () => {
+      const guideContentArr = [
+        "步骤1: 请授权1系统学号和密码以登录系统，便于后续软件<strong>自动</strong>进行1系统的登录和选课操作。",
+      "步骤2: 登录后，输入课程编号和最大重试次数，点击添加任务。",
+      "步骤3: 点击“开始”按钮来启动任务，点击“停止”来关闭任务。",
+      "步骤4: 查看选课日志，了解每次选课尝试的结果。",
+      "步骤5: 完成选课后，您可以查看任务的状态，删除不需要的任务。",
+      "点击界面上方的五个小按钮以切换主题。",
+      "您已了解所有操作，Tongji-electcourse2 祝您选课愉快！"
+      ];
+      let guideStep = 0;
 
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const contentEl = document.getElementById('tutorial-content');
+      const guideModal    = document.getElementById('guide-modal');
+      const guideShowLink = document.getElementById('guide-showLink');
+      const guideCloseBtn = document.getElementById('guide-closeBtn');
+      const guidePrevBtn  = document.getElementById('guide-prevBtn');
+      const guideNextBtn  = document.getElementById('guide-nextBtn');
+      const guideContent  = document.getElementById('guide-content');
 
-    function updateButtons() {
-      if (tutorialStep === 0) {
-        prevBtn.style.display = 'none';        // 隐藏“上一步”，第一步
-      } else {
-        prevBtn.style.display = 'inline-block';// 显示“上一步”
+      function guideUpdateButtons() {
+        guidePrevBtn.style.display = guideStep === 0 ? 'none' : 'inline-block';
+        guideNextBtn.textContent = guideStep === guideContentArr.length - 1 
+          ? '完成' 
+          : '下一步';
       }
 
-      if (tutorialStep === tutorialContent.length - 1) {
-        nextBtn.textContent = '完成';// 最后一步显示“完成”
-      } else {
-        nextBtn.textContent = '下一步';
+      function guideRenderStep() {
+        guideContent.innerHTML = `<p>${guideContentArr[guideStep]}</p>`;
+        guideUpdateButtons();
       }
-    }
 
-    function openTutorial() {
-      tutorialStep = 0;
-      contentEl.innerHTML = `<p>${tutorialContent[tutorialStep]}</p>`;
-      updateButtons();
-      document.getElementById('tutorial-modal').classList.add('active');
-    }
+      window.guideOpen = () => {
+        guideStep = 0;
+        guideRenderStep();
+        guideModal.classList.add('active');
+      };
 
-    function closeTutorial() {
-      document.getElementById('tutorial-modal').classList.remove('active');
-    }
+      window.guideClose = () => {
+        guideModal.classList.remove('active');
+      };
 
-    function nextStep() {
-      if (tutorialStep < tutorialContent.length - 1) {
-        tutorialStep++;
-        contentEl.innerHTML = `<p>${tutorialContent[tutorialStep]}</p>`;
-        updateButtons();
-      } else {
-        // 最后一页点击“完成”就关闭
-        closeTutorial();
-      }
-    }
+      window.guideNext = () => {
+        if (guideStep < guideContentArr.length - 1) {
+          guideStep++;
+          guideRenderStep();
+        } else {
+          guideClose();
+        }
+      };
 
-    function prevStep() {
-      if (tutorialStep > 0) {
-        tutorialStep--;
-        contentEl.innerHTML = `<p>${tutorialContent[tutorialStep]}</p>`;
-        updateButtons();
-      }
-    }
+      window.guidePrev = () => {
+        if (guideStep > 0) {
+          guideStep--;
+          guideRenderStep();
+        }
+      };
 
-    // 打开操作演示模态框（例如用户首次登录时调用）
-    //openTutorial();
-
-    // 假设用户首次访问时触发操作演示
-    //document.addEventListener('DOMContentLoaded', () => {
-    //  if (!localStorage.getItem('tutorialCompleted')) {
-    //    openTutorial();
-    //  }
-    //});
-
-    // 重新打开操作演示模态框
-    function openTutorial() {
-      tutorialStep = 0; // 重置步骤
-      document.getElementById('tutorial-content').innerHTML = tutorialContent[tutorialStep];
-      document.getElementById('tutorial-modal').classList.add('active'); // 显示模态框
-    }
+      guideShowLink.addEventListener('click', guideOpen);
+      guideCloseBtn.addEventListener('click', guideClose);
+      guideNextBtn.addEventListener('click', guideNext);
+      guidePrevBtn.addEventListener('click', guidePrev);
+    });     
 
     // ---------- Q&A 逻辑 ----------
     // Q&A 数据列表
