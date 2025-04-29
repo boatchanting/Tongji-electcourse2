@@ -165,14 +165,14 @@
 
     /* ---------- footer ---------- */
     footer {
-      position: fixed;
+      position: sticky;
       bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      left: auto;
+      transform: none;
       background: var(--card-bg);
       backdrop-filter: blur(10px);
       padding: 10px 20px;
-      border-radius: 12px;
+      border-radius: 12px 12px 0 0;
       box-shadow: 0 -4px 12px var(--shadow);
       text-align: center;
       font-size: 0.9em;
@@ -365,7 +365,7 @@
   <div id="guide-modal" class="guide-modal-overlay">
     <div class="guide-modal">
       <div class="guide-modal-header">
-        <h3>欢迎使用辅助选课系统</h3>
+        <h3>Tongji-Electcourse2使用指南</h3>
         <button id="guide-closeBtn" class="guide-modal-close">×</button>
       </div>
       <div id="guide-content" class="guide-modal-body">
@@ -382,7 +382,7 @@
   <div id="qa-modal" class="qa-modal-overlay">
     <div class="qa-modal">
       <div class="qa-modal-header">
-        <h3>常见问答</h3>
+        <h3>Q&A</h3>
         <button id="qa-closeBtn" class="qa-modal-close">×</button>
       </div>
       <div id="qa-content" class="qa-modal-body">
@@ -491,7 +491,8 @@
   <!-- footer -->
   <footer>
     项目地址：<a href="https://github.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub</a>
-    <a href="https://kkgithub.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub镜像</a>
+    <a href="https://kkgithub.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub镜像</a><br>
+    反馈问题：<a href="https://github.com/boatchanting/Tongji-Electcourse2/issues" target="_blank">Issues</a>
   </footer>
 
 <script>
@@ -734,7 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
     {
       q: "6. 如何更新到最新版本？",
       a: "您可以直接从 Releases 页面下载最新版本的可执行文件，或者通过 Git 拉取最新代码并自行构建：<br><code>git pull origin main</code>"
-    }
+    },
   ];
 
   let qaStep = 0;
