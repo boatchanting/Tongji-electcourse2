@@ -435,189 +435,262 @@
     </div>
   </div>
 
+  <!--错误信息弹窗 -->
+  <!-- 放在<body>底部，使用公用的 .modal-overlay/.modal 样式 -->
+  <div id="modal-error" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tongji-Electcourse2</h3>
+        <button class="modal-close" onclick="hideErrorModal()">×</button>
+      </div>
+      <div class="modal-body" id="modal-error-body">
+        <!-- 错误信息由 JS 填充 -->
+      </div>
+      <div class="modal-footer">
+        <button onclick="hideErrorModal()">确定</button>
+      </div>
+    </div>
+  </div>
+  <!-- 确认信息弹窗 -->
+  <!-- 放在<body>底部，与 error Modal 平级 -->
+  <div id="modal-confirm" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tongji-Electcourse2</h3>
+        <button class="modal-close" onclick="hideConfirmModal(false)">×</button>
+      </div>
+      <div class="modal-body" id="modal-confirm-body">
+        <!-- 文本由 JS 填充 -->
+      </div>
+      <div class="modal-footer">
+        <button onclick="hideConfirmModal(false)">取消</button>
+        <button onclick="hideConfirmModal(true)">确定</button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- footer -->
   <footer>
     项目地址：<a href="https://github.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub</a>
     <a href="https://kkgithub.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub镜像</a>
   </footer>
 
-  <script>
-    // ---------- 主题逻辑 ----------
-    function setTheme(theme) {
-      document.body.className = theme;
-      localStorage.setItem('theme', theme);
-    }
-    function checkTimeTheme() {
-      const h = new Date().getHours();
-      return (h>=6 && h<18) ? '' : 'dark';
-    }
-    document.getElementById('lightBtn').onclick = ()=> setTheme('');
-    document.getElementById('darkBtn').onclick = ()=> setTheme('dark');
-    document.getElementById('blueBtn').onclick = ()=> setTheme('blue-theme');
-    document.getElementById('greenBtn').onclick = ()=> setTheme('green-theme');
-    document.getElementById('purpleBtn').onclick = ()=> setTheme('purple-theme');
-    setTheme(localStorage.getItem('theme') || checkTimeTheme());
+<script>
+// ---------- 主题逻辑 ----------
+function setTheme(theme) {
+  document.body.className = theme;
+  localStorage.setItem('theme', theme);
+}
+function checkTimeTheme() {
+  const h = new Date().getHours();
+  return (h>=6 && h<18) ? '' : 'dark';
+}
+document.getElementById('lightBtn').onclick = ()=> setTheme('');
+document.getElementById('darkBtn').onclick = ()=> setTheme('dark');
+document.getElementById('blueBtn').onclick = ()=> setTheme('blue-theme');
+document.getElementById('greenBtn').onclick = ()=> setTheme('green-theme');
+document.getElementById('purpleBtn').onclick = ()=> setTheme('purple-theme');
+setTheme(localStorage.getItem('theme') || checkTimeTheme());
+</script>
+<script>
+// ---------- 操作引导 ----------
+document.addEventListener('DOMContentLoaded', () => {
+const guideContentArr = [
+  "步骤1: 请授权1系统学号和密码以登录系统，便于后续软件<strong>自动</strong>进行1系统的登录和选课操作。",
+"步骤2: 登录后，输入课程编号和最大重试次数，点击添加任务。",
+"步骤3: 点击“开始”按钮来启动任务，点击“停止”来关闭任务。",
+"步骤4: 查看选课日志，了解每次选课尝试的结果。",
+"步骤5: 完成选课后，您可以查看任务的状态，删除不需要的任务。",
+"点击界面上方的五个小按钮以切换主题。",
+"您已了解所有操作，Tongji-electcourse2 祝您选课愉快！"
+];
+let guideStep = 0;
 
-    // ---------- 操作引导 ----------
-    document.addEventListener('DOMContentLoaded', () => {
-      const guideContentArr = [
-        "步骤1: 请授权1系统学号和密码以登录系统，便于后续软件<strong>自动</strong>进行1系统的登录和选课操作。",
-      "步骤2: 登录后，输入课程编号和最大重试次数，点击添加任务。",
-      "步骤3: 点击“开始”按钮来启动任务，点击“停止”来关闭任务。",
-      "步骤4: 查看选课日志，了解每次选课尝试的结果。",
-      "步骤5: 完成选课后，您可以查看任务的状态，删除不需要的任务。",
-      "点击界面上方的五个小按钮以切换主题。",
-      "您已了解所有操作，Tongji-electcourse2 祝您选课愉快！"
-      ];
-      let guideStep = 0;
+const guideModal    = document.getElementById('guide-modal');
+const guideShowLink = document.getElementById('guide-showLink');
+const guideCloseBtn = document.getElementById('guide-closeBtn');
+const guidePrevBtn  = document.getElementById('guide-prevBtn');
+const guideNextBtn  = document.getElementById('guide-nextBtn');
+const guideContent  = document.getElementById('guide-content');
 
-      const guideModal    = document.getElementById('guide-modal');
-      const guideShowLink = document.getElementById('guide-showLink');
-      const guideCloseBtn = document.getElementById('guide-closeBtn');
-      const guidePrevBtn  = document.getElementById('guide-prevBtn');
-      const guideNextBtn  = document.getElementById('guide-nextBtn');
-      const guideContent  = document.getElementById('guide-content');
+function guideUpdateButtons() {
+  guidePrevBtn.style.display = guideStep === 0 ? 'none' : 'inline-block';
+  guideNextBtn.textContent = guideStep === guideContentArr.length - 1 
+    ? '完成' 
+    : '下一步';
+}
 
-      function guideUpdateButtons() {
-        guidePrevBtn.style.display = guideStep === 0 ? 'none' : 'inline-block';
-        guideNextBtn.textContent = guideStep === guideContentArr.length - 1 
-          ? '完成' 
-          : '下一步';
-      }
+function guideRenderStep() {
+  guideContent.innerHTML = `<p>${guideContentArr[guideStep]}</p>`;
+  guideUpdateButtons();
+}
 
-      function guideRenderStep() {
-        guideContent.innerHTML = `<p>${guideContentArr[guideStep]}</p>`;
-        guideUpdateButtons();
-      }
+window.guideOpen = () => {
+  guideStep = 0;
+  guideRenderStep();
+  guideModal.classList.add('active');
+};
 
-      window.guideOpen = () => {
-        guideStep = 0;
-        guideRenderStep();
-        guideModal.classList.add('active');
-      };
+window.guideClose = () => {
+  guideModal.classList.remove('active');
+};
 
-      window.guideClose = () => {
-        guideModal.classList.remove('active');
-      };
+window.guideNext = () => {
+  if (guideStep < guideContentArr.length - 1) {
+    guideStep++;
+    guideRenderStep();
+  } else {
+    guideClose();
+  }
+};
 
-      window.guideNext = () => {
-        if (guideStep < guideContentArr.length - 1) {
-          guideStep++;
-          guideRenderStep();
-        } else {
-          guideClose();
-        }
-      };
+window.guidePrev = () => {
+  if (guideStep > 0) {
+    guideStep--;
+    guideRenderStep();
+  }
+};
 
-      window.guidePrev = () => {
-        if (guideStep > 0) {
-          guideStep--;
-          guideRenderStep();
-        }
-      };
+guideShowLink.addEventListener('click', guideOpen);
+guideCloseBtn.addEventListener('click', guideClose);
+guideNextBtn.addEventListener('click', guideNext);
+guidePrevBtn.addEventListener('click', guidePrev);
+});     
 
-      guideShowLink.addEventListener('click', guideOpen);
-      guideCloseBtn.addEventListener('click', guideClose);
-      guideNextBtn.addEventListener('click', guideNext);
-      guidePrevBtn.addEventListener('click', guidePrev);
-    });     
+</script>
+<script>
 
-    // ---------- Q&A 逻辑 ----------    
+// ----------------------------------
+// ---------- 与后端交互 -------------
+// ----------------------------------
+let currentLogTask = null, logTimer = null;
 
-    // ----------------------------------
-    // ---------- 与后端交互 -------------
-    // ----------------------------------
-    let currentLogTask = null, logTimer = null;
+// 显示错误 Modal
+function showErrorModal(msg) {
+  document.getElementById('modal-error-body').textContent = msg;
+  document.getElementById('modal-error').classList.add('active');
+}
+// 隐藏错误 Modal
+function hideErrorModal() {
+  document.getElementById('modal-error').classList.remove('active');
+}
 
-    async function login() {
-      if (!document.getElementById('agree').checked) {
-        alert('请先同意用户守则');
-        return;
-      }
-      const u = document.getElementById('username').value;
-      const p = document.getElementById('password').value;
-      if (await window.pywebview.api.login(u,p)) {
-        document.getElementById('login').style.display = 'none';
-        document.getElementById('main').style.display = 'block';
-        refreshTasks();
-      } else {
-        alert('登录失败');
-      }
-    }
+// 登录函数
+async function login() {
+  if (!document.getElementById('agree').checked) {
+    showErrorModal('请先同意用户守则');
+    return;
+  }
+  const u = document.getElementById('username').value;
+  const p = document.getElementById('password').value;
+  const success = await window.pywebview.api.login(u, p);
+  if (success) {
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+    refreshTasks();
+  } else {
+    showErrorModal('登录失败，请检查用户名或密码');
+  }
+}
 
-    function viewLogin() {
+function viewLogin() {
+  clearInterval(logTimer);
+  document.getElementById('main').style.display = 'none';
+  document.getElementById('login').style.display = 'flex';
+}
+
+async function addTask() {
+  const c = document.getElementById('course_no').value;
+  const r = document.getElementById('max_retry').value;
+  if (!c) return showErrorModal('请输入课程编号');
+  await window.pywebview.api.add_task(c,r);
+  refreshTasks();
+}
+
+async function startTask(id) {
+  await window.pywebview.api.start_task(id); refreshTasks();
+}
+async function stopTask(id) {
+  await window.pywebview.api.stop_task(id); refreshTasks();
+}
+
+async function refreshTasks() {
+const tasks = await window.pywebview.api.get_tasks();
+const tb = document.getElementById('tasks_body');
+tb.innerHTML = '';
+tasks.forEach(t => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${t.course_number}</td>
+    <td>${t.max_retries}</td>
+    <td>${t.status}</td>
+    <td>
+      <button onclick="startTask('${t.id}')">开始</button>
+      <button onclick="stopTask('${t.id}')">停止</button>
+      <button onclick="showLogs('${t.id}')">日志</button>
+    </td>
+    <td>
+      <button class="delete-btn" onclick="deleteTask('${t.id}')">删除</button>
+    </td>
+  `;
+  tb.appendChild(tr);
+});
+}
+
+// 服务于 deleteTask 函数，显示确认弹窗
+// 弹窗 Promise 化，msg 为提示内容
+function showConfirmModal(msg) {
+  return new Promise(resolve => {
+    document.getElementById('modal-confirm-body').textContent = msg;
+    const modal = document.getElementById('modal-confirm');
+    modal.classList.add('active');
+
+    // 绑定一次性回调
+    window._confirmResolve = result => {
+      resolve(result);
+      delete window._confirmResolve;
+    };
+  });
+}
+// 服务于 deleteTask 函数，隐藏弹窗
+function hideConfirmModal(result) {
+  document.getElementById('modal-confirm').classList.remove('active');
+  // 调用 resolve
+  if (window._confirmResolve) window._confirmResolve(result);
+}
+
+// deleteTask 函数, 调用 showConfirmModal 确认删除
+async function deleteTask(id) { // 删除任务
+  if (await showConfirmModal('确定要删除这个任务吗？')) {
+    await window.pywebview.api.delete_task(id);
+    // 如果当前在看该任务日志，停止轮询
+    if (currentLogTask === id) {
       clearInterval(logTimer);
-      document.getElementById('main').style.display = 'none';
-      document.getElementById('login').style.display = 'flex';
+      currentLogTask = null;
+      document.getElementById('log_area').value = '';
     }
-
-    async function addTask() {
-      const c = document.getElementById('course_no').value;
-      const r = document.getElementById('max_retry').value;
-      if (!c) return alert('请输入课程编号');
-      await window.pywebview.api.add_task(c,r);
-      refreshTasks();
-    }
-
-    async function startTask(id) {
-      await window.pywebview.api.start_task(id); refreshTasks();
-    }
-    async function stopTask(id) {
-      await window.pywebview.api.stop_task(id); refreshTasks();
-    }
-
-    async function refreshTasks() {
-    const tasks = await window.pywebview.api.get_tasks();
-    const tb = document.getElementById('tasks_body');
-    tb.innerHTML = '';
-    tasks.forEach(t => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${t.course_number}</td>
-        <td>${t.max_retries}</td>
-        <td>${t.status}</td>
-        <td>
-          <button onclick="startTask('${t.id}')">开始</button>
-          <button onclick="stopTask('${t.id}')">停止</button>
-          <button onclick="showLogs('${t.id}')">日志</button>
-        </td>
-        <td>
-          <button class="delete-btn" onclick="deleteTask('${t.id}')">删除</button>
-        </td>
-      `;
-      tb.appendChild(tr);
-    });
+    refreshTasks();
   }
+}
 
-  async function deleteTask(id) {// 删除任务
-    if (confirm('确定要删除这个任务吗？')) {
-      await window.pywebview.api.delete_task(id);
-      // 如果当前在看该任务日志，停止轮询
-      if (currentLogTask === id) {
-        clearInterval(logTimer);
-        currentLogTask = null;
-        document.getElementById('log_area').value = '';
-      }
-      refreshTasks();
+function showLogs(tid) {
+  currentLogTask = tid; document.getElementById('log_area').value = '';
+  if (logTimer) clearInterval(logTimer);
+  logTimer = setInterval(async ()=>{
+    const lines = await window.pywebview.api.get_logs(currentLogTask);
+    if (lines.length) {
+      const area = document.getElementById('log_area');
+      lines.forEach(l=> area.value += l + '\n');
+      area.scrollTop = area.scrollHeight;
     }
-  }
-
-    function showLogs(tid) {
-      currentLogTask = tid; document.getElementById('log_area').value = '';
-      if (logTimer) clearInterval(logTimer);
-      logTimer = setInterval(async ()=>{
-        const lines = await window.pywebview.api.get_logs(currentLogTask);
-        if (lines.length) {
-          const area = document.getElementById('log_area');
-          lines.forEach(l=> area.value += l + '\n');
-          area.scrollTop = area.scrollHeight;
-        }
-      }, 500);
-    }
-  </script>
+  }, 500);
+}
+</script>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {//Q&A逻辑
+// ---------- Q&A 逻辑 ---------- 
+document.addEventListener('DOMContentLoaded', () => {
   // Q&A 数据
   const qaContentArr = [
     {
