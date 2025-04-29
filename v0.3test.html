@@ -7,11 +7,11 @@
   <style>
     /* ---------- 主题变量 ---------- */
     :root {
-      --bg-color: #f0f2f5;
-      --card-bg: #ffffffcc;
-      --text-color: #2c3e50;
-      --accent: #0a84ff;
-      --shadow: rgba(0,0,0,0.1);
+      --bg-color: #f0f2f5; /* 背景色 */
+      --card-bg: #ffffffcc; /* 卡片背景色 */
+      --text-color: #2c3e50;/* 文本颜色 */
+      --accent: #0a84ff;/* 主要颜色 */
+      --shadow: rgba(0,0,0,0.1);/* 阴影 */
       --font: "Segoe UI Variable","Segoe UI","Helvetica Neue",Arial,sans-serif;
     }
     .dark {
@@ -21,9 +21,27 @@
       --accent: #0a84ff;
       --shadow: rgba(0,0,0,0.5);
     }
-    .blue-theme { --accent: #2196f3; }
-    .green-theme { --accent: #4caf50; }
-    .purple-theme { --accent: #9c27b0; }
+    .blue-theme { 
+      --bg-color: linear-gradient(135deg, #56cbf292 0%, #2f81edbe 100%);
+      --card-bg: linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%); 
+      --text-color: #333; 
+      --accent: #2196f3; 
+      --shadow: rgba(0,0,0,0.1); 
+    }
+    .green-theme { 
+      --bg-color: linear-gradient(135deg, #a1ffcec0 0%, #eefa92d7 100%);
+      --card-bg: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%); 
+      --text-color: #333; 
+      --accent: #4caf50; 
+      --shadow: rgba(0,0,0,0.1); 
+    }
+    .purple-theme { 
+      --bg-color: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      --card-bg: linear-gradient(135deg, #ffffff 0%, #f3e5f5 100%); 
+      --text-color: #333; 
+      --accent: #9c27b0; 
+      --shadow: rgba(0,0,0,0.1); 
+    }
 
     /* ---------- 全局 ---------- */
     * { box-sizing: border-box; }
@@ -340,7 +358,7 @@
     <div class="theme-btn" id="darkBtn">🌙</div>
     <div class="theme-btn" id="blueBtn">🌊</div>
     <div class="theme-btn" id="greenBtn">🍃</div>
-    <div class="theme-btn" id="purpleBtn">🎨</div>
+    <div class="theme-btn" id="purpleBtn">🍇</div>
   </div>
 
   <!-- 操作引导模态框 -->
@@ -703,7 +721,7 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     {
       q: "3. 可以同时选择多门课程吗？",
-      a: "暂时没有添加这个功能，不过可以挂多个这样的程序在后台，可以解决这个问题。"
+      a: "当然可以！您可以添加多个任务，每个任务对应一门课程。程序对每个任务进行独立的操作，不会相互干扰。"
     },
     {
       q: "4. 如何确保程序的稳定性？",
