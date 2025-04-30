@@ -251,21 +251,22 @@
       display: flex;
     }
     .guide-modal {
-      background: #ffffffcc;
+      background: var(--card-bg);
       backdrop-filter: blur(10px);
       border-radius: 12px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.1);
       width: 400px; max-width: 90%; padding: 20px;
       animation: guide-fadeIn 0.2s ease-out;
       font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif;
-      color: #2c3e50;
+      color: var(--text-color);
     }
     .guide-modal-header {
       display: flex; justify-content: space-between; align-items: center;
     }
     .guide-modal-close {
       background: transparent; border: none; font-size: 1.2em;
-      cursor: pointer; color: #2c3e50;
+      cursor: pointer; 
+      color: var(--text-color);
     }
     .guide-modal-body {
       margin-top: 10px;
@@ -299,21 +300,22 @@
       display: flex;
     }
     .qa-modal {
-      background: #ffffffcc;
+      background: var(--card-bg);
       backdrop-filter: blur(8px);
       border-radius: 10px;
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
       width: 450px; max-width: 90%; padding: 20px;
       animation: qa-fadeIn 0.2s ease-out;
       font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif;
-      color: #333;
+      color: var(--text-color);
     }
     .qa-modal-header {
       display: flex; justify-content: space-between; align-items: center;
     }
     .qa-modal-close {
       background: transparent; border: none; font-size: 1.3em;
-      cursor: pointer; color: #333;
+      cursor: pointer; 
+      color: var(--text-color);
     }
     .qa-modal-body {
       margin-top: 12px; line-height: 1.5;
@@ -327,10 +329,12 @@
       font-size: 0.9em;
     }
     .qa-prevBtn {
-      background: #ccc; color: #333;
+      background: #ccc; 
+      color: #333;
     }
     .qa-nextBtn {
-      background: var(--accent); color: #fff;
+      background: var(--accent); 
+      color: var(--text-color);
     }
     @keyframes qa-fadeIn {
       from { opacity: 0; transform: translateY(-8px); }
