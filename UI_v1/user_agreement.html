@@ -4,38 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用户守则</title>
+    <link rel="stylesheet" href="styles/theme.css"/><!-- 主题样式 -->
+    <link rel="stylesheet" href="styles/link.css"/><!-- 链接样式 -->
+    <link rel="stylesheet" href="styles/scrollbar.css"/><!-- 滚动条样式 -->
     <style>
-        /* 主题变量 */
-        :root {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffffcc;
-            --text-color: #2c3e50;
-            --accent: #0a84ff;
-            --shadow: rgba(0,0,0,0.1);
-            --font: "Segoe UI Variable","Segoe UI","Helvetica Neue",Arial,sans-serif;
-        }
-        .dark {
-            --bg-color: #1e1e1e;
-            --card-bg: #2a2a2acc;
-            --text-color: #e5e5e5;
-            --accent: #0a84ff;
-            --shadow: rgba(0,0,0,0.5);
-        }
-        .blue-theme { --accent: #2196f3; }
-        .green-theme { --accent: #4caf50; }
-        .purple-theme { --accent: #9c27b0; }
-
         /* 全局样式 */
         * { box-sizing: border-box; }
         body {
             font-family: var(--font);
             background: var(--bg-color);
             color: var(--text-color);
-            margin: 0;
-            padding: 20px;
+            margin: 0; padding: 20px;
             transition: background 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
-        }
+            }
 
         /* 卡片样式 */
         .card {
@@ -72,40 +56,6 @@
             transform: translateY(-1px);
         }
         button:active { transform: translateY(0); }
-
-        /* ---------- 主题切换区 ---------- */
-        .theme-toggle {
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        margin-bottom: 20px;
-        }
-        .theme-btn {
-        width: 40px; height: 40px;
-        border-radius: 50%;
-        border: 2px solid var(--accent);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        background: var(--card-bg);
-        box-shadow: 0 4px 12px var(--shadow);
-        transition: box-shadow 0.3s, transform 0.2s;
-        }
-        .theme-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--shadow); }
-
-        /* ---------- 全局：链接样式 ---------- */
-        a {
-        color: var(--accent);
-        text-decoration: none;
-        transition: color 0.3s ease;
-        }
-        a:hover {
-        color: var(--text-color);
-        }
-        a:active {
-        color: var(--shadow);
-        }
 
         /* 内容样式 */
         .content {
@@ -170,22 +120,8 @@
         </footer>
     </div>
 
+<script src="scripts/theme.js"></script><!-- 主题逻辑 -->
 <script>
-    // ---------- 主题逻辑 ----------
-function setTheme(theme) {
-    document.body.className = theme;
-    localStorage.setItem('theme', theme);
-}
-function checkTimeTheme() {
-    const h = new Date().getHours();
-    return (h>=6 && h<18) ? '' : 'dark';
-}
-document.getElementById('lightBtn').onclick = ()=> setTheme('');
-document.getElementById('darkBtn').onclick = ()=> setTheme('dark');
-document.getElementById('blueBtn').onclick = ()=> setTheme('blue-theme');
-document.getElementById('greenBtn').onclick = ()=> setTheme('green-theme');
-document.getElementById('purpleBtn').onclick = ()=> setTheme('purple-theme');
-setTheme(localStorage.getItem('theme') || checkTimeTheme());
 
 const langData = {
     'zh': {

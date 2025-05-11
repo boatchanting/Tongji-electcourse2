@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tongji‑Electcourse2 | 软件介绍</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- 公共样式 -->
+  <link rel="stylesheet" href="styles/theme.css" />
+  <link rel="stylesheet" href="styles/link.css" />
+  <style>
+    /* =============== 全局 =============== */
+    :root {
+      /* 允许快速调整主色调渐变 */
+      --grad-start: var(--accent);
+      --grad-end: #8d4dff;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* =============== 顶部主题切换 =============== */
+    .theme-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px 0 0;
+      animation: fadeInUp 0.6s ease-out 0.1s both;
+    }
+    .theme-btn { cursor: pointer; font-size: 1.35rem; line-height: 1; }
+
+    /* =============== Hero =============== */
+    .hero {
+      text-align: center;
+      padding: 140px 20px 100px;
+      background: radial-gradient(100% 140% at 50% 0%, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0) 60%),
+                  linear-gradient(135deg, rgba(0, 120, 215, 0.18) 0%, rgba(180, 80, 255, 0.18) 100%),
+                  var(--card-bg);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before, .hero::after {
+      content: "";
+      position: absolute;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 70%);
+      width: 600px; height: 600px;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: 0;
+      pointer-events: none;
+      animation: float 14s ease-in-out infinite;
+    }
+    .hero::before { top: -200px; left: -200px; }
+    .hero::after  { bottom: -200px; right: -150px; animation-delay: -5s; }
+    @keyframes float {
+      0%,100% { transform: translateY(0) translateX(0); }
+      50%      { transform: translateY(40px) translateX(20px); }
+    }
+
+    .hero-content { position: relative; z-index: 1; animation: fadeInUp 0.8s ease-out 0.2s both; }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.2rem);
+      margin: 0 0 16px;
+      background: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.3rem);
+      max-width: 620px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+    }
+    .hero button {
+      padding: 14px 32px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%);
+      color: #fff;
+      cursor: pointer;
+      transition: filter 0.2s, transform 0.1s;
+    }
+    .hero button:hover { filter: brightness(1.1); transform: translateY(-3px); }
+    .hero button:active { transform: translateY(0); }
+
+    /* 波浪分隔 */
+    .wave {
+      position: relative;
+      height: 80px;
+      margin-top: -80px; /* 与 hero 重叠 */
+      overflow: hidden;
+    }
+    .wave svg { display: block; width: 200%; height: 100%; }
+
+    /* =============== Features =============== */
+    .features {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      padding: 80px 20px;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      animation: fadeInUp 0.8s ease-out 0.4s both;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 32px 24px;
+      box-shadow: 0 6px 20px var(--shadow);
+      backdrop-filter: blur(8px);
+      text-align: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px) rotateX(4deg) rotateY(-3deg);
+      box-shadow: 0 12px 36px var(--shadow);
+    }
+    .feature-icon {
+      font-size: 2.6rem;
+      margin-bottom: 14px;
+      background: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%);
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .feature-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
+    .feature-desc  { font-size: 0.95rem; line-height: 1.6; }
+
+    /* =============== 概述 =============== */
+    .overview {
+      max-width: 920px;
+      margin: 60px auto 100px;
+      padding: 50px 40px;
+      background: var(--card-bg);
+      border-left: 6px solid var(--accent);
+      border-radius: 14px;
+      box-shadow: 0 6px 20px var(--shadow);
+      animation: fadeInUp 0.8s ease-out 0.6s both;
+    }
+    .overview h2 { margin-top: 0; font-size: 1.6rem; }
+    .overview p  { line-height: 1.8; margin: 16px 0; }
+
+    /* =============== Footer =============== */
+    footer {
+      margin-top: auto;
+      padding: 28px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* =============== 手机端适配 =============== */
+    @media (max-width: 640px) {
+      .hero { padding: 100px 16px 80px; }
+      .hero p { margin-bottom: 28px; }
+      .hero button { width: 100%; }
+
+      .features { grid-template-columns: 1fr; padding: 60px 16px; }
+      .feature-card { padding: 26px 20px; }
+
+      .overview { margin: 50px 16px 80px; padding: 40px 26px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 主题切换按钮 -->
+  <div class="theme-toggle">
+    <div class="theme-btn" id="lightBtn">☀️</div>
+    <div class="theme-btn" id="darkBtn">🌙</div>
+    <div class="theme-btn" id="blueBtn">🌊</div>
+    <div class="theme-btn" id="greenBtn">🍃</div>
+    <div class="theme-btn" id="purpleBtn">🍇</div>
+  </div>
+
+  <!-- Hero -->
+  <header class="hero">
+    <h1>Tongji‑Electcourse2</h1>
+    <p>专为同济学子设计的可视化辅助选课工具，支持自动登录、循环重试与多线程并发，让抢课更高效。</p>
+    <button onclick="window.location.href='https://github.com/boatchanting/Tongji-electcourse2/releases/'">下载链接</button>
+  </header>
+
+  <!-- 功能亮点 -->
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">⚙️</div>
+      <div class="feature-title">自动登录</div>
+      <div class="feature-desc">一次输入学号密码，全流程自动登录选课系统。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <div class="feature-title">自定义重试</div>
+      <div class="feature-desc">可为热门课程设置最大重试次数，直到成功或达到上限。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">实时日志</div>
+      <div class="feature-desc">实时记录任务状态，每一步操作尽在掌握。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚀</div>
+      <div class="feature-title">多线程并发</div>
+      <div class="feature-desc">不同课程独立线程并行运行，大幅提升抢课概率。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎨</div>
+      <div class="feature-title">主题切换</div>
+      <div class="feature-desc">内置多款配色方案，随心切换，夜间模式护眼舒适。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <div class="feature-title">隐私安全</div>
+      <div class="feature-desc">本地运行，无任何账号信息上传，保证数据安全。</div>
+    </div>
+  </section>
+
+  <!-- 软件概述 -->
+  <section class="overview">
+    <h2>为什么选择 Tongji‑Electcourse2？</h2>
+    <p>官方选课系统在高峰期常出现延迟甚至崩溃，热门课程分秒必争。传统手动刷新方式效率低且令人身心俱疲。</p>
+    <p>Tongji‑Electcourse2 结合自动化脚本与可视化界面，支持批量管理课程与智能循环重试，并通过日志实时反馈执行进度，帮助你轻松、透明地掌控抢课进程。</p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    开源地址：<a href="https://github.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub</a> · 反馈：<a href="https://github.com/boatchanting/Tongji-Electcourse2/issues" target="_blank">Issues</a>
+  </footer>
+
+  <!-- 主题切换脚本复用 -->
+  <script src="scripts/theme.js"></script>
+</body>
+</html>

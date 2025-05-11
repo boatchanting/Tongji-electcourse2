@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tongji-Electcourse2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles/theme.css"/><!-- 主题样式 -->
+  <link rel="stylesheet" href="styles/modal.css"/><!-- 通用模态框样式 -->
+  <link rel="stylesheet" href="styles/qa_modal.css"/><!-- Q&A模态框样式 -->
+  <link rel="stylesheet" href="styles/guide_modal.css"/><!-- 用户指引模态框样式 -->
+  <link rel="stylesheet" href="styles/link.css"/><!-- 链接样式 -->
+  <link rel="stylesheet" href="styles/scrollbar.css"/><!-- 滚动条样式 -->
+  <style>
+    /* ---------- 全局 ---------- */
+    * { box-sizing: border-box; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0; padding: 20px;
+      transition: background 0.3s, color 0.3s;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    h2, h3 { margin: 0 0 10px; }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px var(--shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+
+    button {
+      font-family: var(--font);
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    button:hover { background: shade(var(--accent), 0.9); transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+    button.delete-btn {
+      background: transparent;
+      color: #e74856;      /* 红色警告色 */
+      border: 1px solid #e74856;
+      border-radius: 6px;
+      padding: 8px 16px;
+      transition: background 0.2s, color 0.2s;
+    }
+    button.delete-btn:hover {
+      background: rgba(231,72,86,0.1);
+    }
+
+    input {
+      font-family: var(--font);
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: var(--accent); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th { background: var(--card-bg); }
+    tr:hover td { background: #f9f9f9; }
+
+    textarea {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      resize: vertical;
+      font-family: var(--font);
+    }
+
+    /* ---------- 登录居中 ---------- */
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 40px);
+    }
+
+    /* ---------- footer ---------- */
+    footer {
+      position: sticky;
+      bottom: 20px;
+      left: auto;
+      transform: none;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      padding: 10px 20px;
+      border-radius: 12px;
+      box-shadow: 0 -4px 12px var(--shadow);
+      text-align: center;
+      font-size: 0.9em;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- 主题切换 -->
+  <div class="theme-toggle">
+    <div class="theme-btn" id="lightBtn">☀️</div>
+    <div class="theme-btn" id="darkBtn">🌙</div>
+    <div class="theme-btn" id="blueBtn">🌊</div>
+    <div class="theme-btn" id="greenBtn">🍃</div>
+    <div class="theme-btn" id="purpleBtn">🍇</div>
+  </div>
+
+  <!-- 操作引导模态框 -->
+  <div id="guide-modal" class="guide-modal-overlay">
+    <div class="guide-modal">
+      <div class="guide-modal-header">
+        <h3>Tongji-Electcourse2使用指南</h3>
+        <button id="guide-closeBtn" class="guide-modal-close">×</button>
+      </div>
+      <div id="guide-content" class="guide-modal-body">
+        <!-- 文本由 JS 填充 -->
+      </div>
+      <div class="guide-modal-footer">
+        <button id="guide-prevBtn" class="guide-btn guide-prevBtn">上一步</button>
+        <button id="guide-nextBtn" class="guide-btn guide-nextBtn">下一步</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q&A 模态框结构 -->
+  <div id="qa-modal" class="qa-modal-overlay">
+    <div class="qa-modal">
+      <div class="qa-modal-header">
+        <h3>Q&A</h3>
+        <button id="qa-closeBtn" class="qa-modal-close">×</button>
+      </div>
+      <div id="qa-content" class="qa-modal-body">
+        <!-- 由 JS 填充 -->
+      </div>
+      <div class="qa-modal-footer">
+        <button id="qa-prevBtn" class="qa-btn qa-prevBtn">上一个</button>
+        <button id="qa-nextBtn" class="qa-btn qa-nextBtn">下一个</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 登录界面 -->
+  
+  <div id="login" class="login-wrapper">
+    <div class="card" style="max-width:360px; width:100%;">
+      <h2>登录</h2>
+      <div style="margin-top:10px;">
+        <label>学号：</label><br>
+        <input id="username" type="text" style="width:100%;"><br><br>
+        <label>密码：</label><br>
+        <input id="password" type="password" style="width:100%;"><br><br>
+        <label><input type="checkbox" id="agree" /> 我已同意 <a href="UI_v1/user_agreement.html">用户守则</a>
+          <a href="javascript:void(0)" id="guide-showLink">使用指南</a>
+          <a href="javascript:void(0)" id="qa-showLink">Q&A</a>
+          </label> <br><br> <!-- <a href="UI_v1/demo.html">使用指南</a> -->
+        <button style="width:100%;" onclick="login()">登录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主界面 -->
+  <div id="main" style="display:none;">
+    <div class="card">
+      <div style="display:flex; justify-content: space-between; align-items: center;">
+        <h2>选课任务管理</h2>
+        <button onclick="viewLogin()" style="background:transparent; color:var(--accent); box-shadow:none; padding:4px 8px;">查看登录信息</button>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <div>
+          <label>课程编号：</label><br>
+          <input id="course_no" type="text">
+        </div>
+        <div>
+          <label>最大重试次数：</label><br>
+          <input id="max_retry" type="number" value="10000" min="1" style="width:60px">
+        </div>
+        <div style="align-self:flex-end;">
+          <button onclick="addTask()">添加任务</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>最大重试</th>
+            <th>状态</th>
+            <th>操作</th>
+            <th>删除</th>        <!-- 删除任务 -->
+          </tr>
+        </thead>
+        <tbody id="tasks_body"></tbody>
+      </table>
+
+      <h3 style="margin-top:20px;">日志输出</h3>
+      <textarea id="log_area" rows="8" readonly></textarea>
+    </div>
+  </div>
+
+  <!--错误信息弹窗 -->
+  <!-- 放在<body>底部，使用公用的 .modal-overlay/.modal 样式 -->
+  <div id="modal-error" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tongji-Electcourse2</h3>
+        <button class="modal-close" onclick="hideErrorModal()">×</button>
+      </div>
+      <div class="modal-body" id="modal-error-body">
+        <!-- 错误信息由 JS 填充 -->
+      </div>
+      <div class="modal-footer">
+        <button onclick="hideErrorModal()">确定</button>
+      </div>
+    </div>
+  </div>
+  <!-- 确认信息弹窗 -->
+  <!-- 放在<body>底部，与 error Modal 平级 -->
+  <div id="modal-confirm" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tongji-Electcourse2</h3>
+        <button class="modal-close" onclick="hideConfirmModal(false)">×</button>
+      </div>
+      <div class="modal-body" id="modal-confirm-body">
+        <!-- 文本由 JS 填充 -->
+      </div>
+      <div class="modal-footer">
+        <button onclick="hideConfirmModal(false)">取消</button>
+        <button onclick="hideConfirmModal(true)">确定</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- footer -->
+  <footer>
+    项目地址：<a href="https://github.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub</a>
+    <a href="https://kkgithub.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub镜像</a><br>
+    反馈问题：<a href="https://github.com/boatchanting/Tongji-Electcourse2/issues" target="_blank">Issues</a>
+  </footer>
+
+  <script src="scripts/theme.js"></script><!-- 主题逻辑 -->
+  <script src="scripts/guide.js"></script><!-- 使用指南逻辑 -->
+  <script src="scripts/qa.js"></script><!-- Q&A 逻辑 -->
+  <script src="scripts/backend.js"></script><!-- 与后端交互逻辑 -->
+
+</body>
+</html>
