@@ -2,6 +2,9 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
+  <meta
+  name="viewport"
+  content="width=device-width,initial-scale=1.0,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
   <title>Tongji‑Electcourse2 | 软件介绍</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- 公共样式 -->
@@ -167,6 +170,19 @@
     }
     footer a { color: var(--accent); text-decoration: none; }
     footer a:hover { text-decoration: underline; }
+
+    /* === 防止横向滚动 === */
+    html, body {
+      overflow-x: hidden;          /* 彻底关掉水平滚动条 */
+      max-width: 100vw;            /* 抑制超宽元素撑出视口 */
+      touch-action: pan-y;         /* 仅允许垂直手势，提升滚动流畅度 */
+    }
+
+    /* 修正极少数 transform‑scale/absolute 元素可能撑宽的问题 */
+    *:where(div, section, header, footer) {
+      max-width: 100%;
+    }
+
 
     /* =============== 手机端适配 =============== */
     @media (max-width: 640px) {
