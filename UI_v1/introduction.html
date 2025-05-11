@@ -183,6 +183,66 @@
       max-width: 100%;
     }
 
+    /* === Carousel 样式=== */
+    .carousel {
+      position: relative;
+      width: 90%;                     /* 留点左右留白 */
+      max-width: 960px;               /* 桌面端上限 */
+      height: clamp(220px, 56vw, 540px);  /* 小屏 220px，随宽度增长，但不超 540px */
+      margin: 60px auto;
+      overflow: hidden;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,.12);
+    }
+
+    .carousel-track {
+      display: flex;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .carousel-track img {
+      flex: 0 0 100%;
+      height: 100%;
+      width: 100%;
+      object-fit: contain;            /* 保证整张完整可见 */
+      scroll-snap-align: center;
+      user-select: none;
+    }
+
+    .carousel-track::-webkit-scrollbar { display: none; } /* 隐藏滚动条 */
+
+    /* 导航按钮（可选） */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,.45);
+      border: none;
+      color: #fff;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 1.6rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+    }
+    .carousel-btn:hover { background: rgba(0,0,0,.6); }
+    .carousel-btn.prev { left: 12px; }
+    .carousel-btn.next { right: 12px; }
+
+    @media (max-width: 640px) {
+      .carousel { margin: 40px 0; }
+      .carousel-btn { width: 32px; height: 32px; font-size: 1.3rem; }
+    }
+
+
 
     /* =============== 手机端适配 =============== */
     @media (max-width: 640px) {
@@ -213,6 +273,22 @@
     <p>专为同济学子设计的可视化辅助选课工具，支持自动登录、循环重试与多线程并发，让抢课更高效。</p>
     <button onclick="window.location.href='https://github.com/boatchanting/Tongji-electcourse2/releases/'">下载链接</button>
   </header>
+
+  <!-- 图片轮播 Carousel -->
+  <section class="carousel" aria-label="软件界面滚动预览">
+    <div class="carousel-track">
+      <img src="img/p1.png" alt="软件界面示例 1">
+      <img src="img/p2.png" alt="软件界面示例 2">
+      <img src="img/p3.png" alt="软件界面示例 3">
+      <img src="img/p4.png" alt="软件界面示例 4">
+      <img src="img/p5.png" alt="软件界面示例 5">
+    </div>
+
+    <!-- 如果想要手动导航按钮，可以保留 ↓，不需要就删掉 -->
+    <button class="carousel-btn prev" aria-label="上一张">‹</button>
+    <button class="carousel-btn next" aria-label="下一张">›</button>
+  </section>
+
 
   <!-- 功能亮点 -->
   <section class="features">
@@ -262,5 +338,38 @@
 
   <!-- 主题切换脚本复用 -->
   <script src="scripts/theme.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const track   = document.querySelector('.carousel-track');
+  const slides  = track.querySelectorAll('img');
+  const prevBtn = document.querySelector('.carousel-btn.prev');
+  const nextBtn = document.querySelector('.carousel-btn.next');
+
+  let index = 0;                                   // 当前页指针
+  const slideWidth = () => track.clientWidth;      // 每次实时取，适配响应式
+
+  /* —— 滚动到指定索引（环形） —— */
+  function go(delta) {
+    index = (index + delta + slides.length) % slides.length;
+    track.scrollTo({ left: index * slideWidth(), behavior: 'smooth' });
+  }
+
+  /* 手动按钮 */
+  prevBtn?.addEventListener('click', () => go(-1));
+  nextBtn?.addEventListener('click', () => go( 1));
+
+  /* 自动轮播（5 s） */
+  let timer = setInterval(() => go(1), 5000);
+
+  /* 用户按住/滑动时暂停，放开继续 */
+  track.addEventListener('pointerdown', () => clearInterval(timer));
+  track.addEventListener('pointerup',   () => timer = setInterval(() => go(1), 5000));
+
+  /* 处理窗口大小变化防止错位 */
+  window.addEventListener('resize', () => track.scrollLeft = index * slideWidth());
+});
+</script>
+
 </body>
 </html>
