@@ -1,0 +1,33 @@
+/* log_table.css */
+/* 日志容器最小高度 */
+.log-table-container {
+  max-height: 400px;           /* 可根据需要调整最大高度 */
+  min-height: 200px;           /* 保证容器高度不小于某个值 */
+  overflow-y: auto;
+  border-radius: 8px;
+  background: var(--card-bg);
+  margin-top: 10px;
+}
+
+/* 表格文字和行高 */
+.log-table th,
+.log-table td {
+  padding: 12px 16px;          /* 内边距变大，行高自然提升 */
+  font-family: monospace;
+  font-size: 16px;             /* 字号改大 */
+  line-height: 28px;           /* 行高最少 28px */
+  min-height: 28px;            /* 最少高度 */
+  text-align: left;
+}
+
+/* 表头固定后也要同步字号和高度 */
+.log-table thead th {
+  font-size: 17px;
+  line-height: 30px;
+}
+
+/* 交替行背景略微加高 */
+/* .log-table tr:nth-child(odd) td {
+  background: rgba(0,0,0,0.02);
+} */
+

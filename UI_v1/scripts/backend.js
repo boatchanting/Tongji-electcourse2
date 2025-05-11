@@ -52,30 +52,64 @@ async function stopTask(id) {
   await window.pywebview.api.stop_task(id); refreshTasks();
 }
 
-async function refreshTasks() {
-const tasks = await window.pywebview.api.get_tasks();
-const tb = document.getElementById('tasks_body');
-tb.innerHTML = '';
-tasks.forEach(t => {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${t.course_number}</td>
-    <td>${t.max_retries}</td>
-    <td>${t.status}</td>
-    <td>
-      <button onclick="startTask('${t.id}')">开始</button>
-      <button onclick="stopTask('${t.id}')">停止</button>
-      <button onclick="showLogs('${t.id}')">日志</button>
-    </td>
-    <td>
-      <button class="delete-btn" onclick="deleteTask('${t.id}')">删除</button>
-    </td>
-  `;
-  tb.appendChild(tr);
-});
+// 服务于 enableRemarkEdit 函数，双击备注列时启用编辑，td 为双击的单元格元素
+function enableRemarkEdit(td) {
+  if (td.querySelector('input')) return;
+
+  const oldText = td.textContent;
+  td.innerHTML = `<input type="text" value="${oldText}" style="width:100%">`;
+  const input = td.firstElementChild;
+  input.focus(); input.select();
+
+  function save() {
+    const newText = input.value.trim() || '无';
+    td.textContent = newText;
+    // 同步到后端：
+    const taskId = td.dataset.taskId;
+    window.pywebview.api.update_remark(taskId, newText);
+  }
+
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') input.blur();
+    if (e.key === 'Escape') td.textContent = oldText;
+  });
 }
 
-// 服务于 deleteTask 函数，显示确认弹窗
+/** refreshTasks 函数
+ * 刷新任务列表，从后端获取最新任务信息并更新到页面上
+ */
+async function refreshTasks() {
+  const tasks = await window.pywebview.api.get_tasks();
+  const tb = document.getElementById('tasks_body');
+  tb.innerHTML = '';
+
+  tasks.forEach(t => {
+    const tr = document.createElement('tr');
+    tr.dataset.taskId = t.id;
+
+    tr.innerHTML = `
+      <td>${t.course_number}</td>
+      <td>${t.max_retries}</td>
+      <td>${t.status}</td>
+      <td>
+        <button onclick="startTask('${t.id}')">开始</button>
+        <button onclick="stopTask('${t.id}')">停止</button>
+        <button onclick="showLogs('${t.id}')">日志</button>
+      </td>
+      <td class="remarks-cell"
+          ondblclick="enableRemarkEdit(this)"
+          data-task-id="${t.id}">${t.remark || '无'}</td>  <!-- 新增备注列 -->
+      <td>
+        <button class="delete-btn" onclick="deleteTask('${t.id}')">删除</button>
+      </td>
+    `;
+    tb.appendChild(tr);
+  });
+}
+
+
+// 显示确认弹窗
 // 弹窗 Promise 化，msg 为提示内容
 function showConfirmModal(msg) {
   return new Promise(resolve => {
@@ -111,15 +145,38 @@ async function deleteTask(id) { // 删除任务
   }
 }
 
+// showLogs, 显示任务日志
 function showLogs(tid) {
-  currentLogTask = tid; document.getElementById('log_area').value = '';
+  currentLogTask = tid;
+  const tbody = document.getElementById('log_body');
+  tbody.innerHTML = '';               // 清空之前的日志
   if (logTimer) clearInterval(logTimer);
-  logTimer = setInterval(async ()=>{
+
+  logTimer = setInterval(async () => {
     const lines = await window.pywebview.api.get_logs(currentLogTask);
     if (lines.length) {
-      const area = document.getElementById('log_area');
-      lines.forEach(l=> area.value += l + '\n');
-      area.scrollTop = area.scrollHeight;
+      lines.forEach(line => {
+        // 将 “[HH:MM:SS.xxx] 内容” 拆成两部分
+        const match = line.match(/^\[(.*?)\]\s*(.*)$/);
+        const time = match ? match[1] : '';
+        const msg  = match ? match[2] : line;
+
+        const tr = document.createElement('tr');
+        const tdTime = document.createElement('td');
+        const tdMsg  = document.createElement('td');
+
+        tdTime.textContent = time;
+        tdMsg.textContent  = msg;
+
+        tr.appendChild(tdTime);
+        tr.appendChild(tdMsg);
+        tbody.appendChild(tr);
+      });
+
+      // 滚动到底部
+      const container = document.querySelector('.log-table-container');
+      container.scrollTop = container.scrollHeight;
     }
   }, 500);
 }
+

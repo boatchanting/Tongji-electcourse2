@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="styles/guide_modal.css"/><!-- 用户指引模态框样式 -->
   <link rel="stylesheet" href="styles/link.css"/><!-- 链接样式 -->
   <link rel="stylesheet" href="styles/scrollbar.css"/><!-- 滚动条样式 -->
+  <link rel="stylesheet" href="styles/log_table.css"/><!-- 日志表格样式 -->
   <style>
     /* ---------- 全局 ---------- */
     * { box-sizing: border-box; }
@@ -180,7 +181,8 @@
         <label><input type="checkbox" id="agree" /> 我已同意 <a href="user_agreement.html">用户守则</a>
           <a href="javascript:void(0)" id="guide-showLink">使用指南</a>
           <a href="javascript:void(0)" id="qa-showLink">Q&A</a>
-          </label> <br><br> <!-- <a href="demo.html">使用指南</a> -->
+          <!--<a href="introduction.html" id="qa-showLink">软件介绍</a>-->
+          </label> <br><br>
         <button style="width:100%;" onclick="login()">登录</button>
       </div>
     </div>
@@ -214,14 +216,34 @@
             <th>最大重试</th>
             <th>状态</th>
             <th>操作</th>
+            <th>备注</th>
             <th>删除</th>        <!-- 删除任务 -->
           </tr>
         </thead>
         <tbody id="tasks_body"></tbody>
       </table>
 
-      <h3 style="margin-top:20px;">日志输出</h3>
-      <textarea id="log_area" rows="8" readonly></textarea>
+      <h3 style="margin-top:20px; display:flex; align-items:center;">
+        日志输出
+        <div style="margin-left:auto; gap:8px; display:flex;">
+          <!-- <button onclick="exportLogs('txt')">复制&nbsp;TXT</button>
+          <button onclick="exportLogs('json')">复制&nbsp;JSON</button> -->
+          <!-- 该功能尚未实现 -->
+        </div>
+      </h3>
+
+      <div class="log-table-container">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>日志信息</th>
+            </tr>
+          </thead>
+          <tbody id="log_body"></tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 

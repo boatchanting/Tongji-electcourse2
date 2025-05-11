@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>页面走丢啦</title>
+  <style>
+    body {
+      background-color: #f9f4ef;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    .container {
+      text-align: center;
+    }
+    .face {
+      font-size: 6rem;
+      animation: float 2s ease-in-out infinite;
+    }
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5em;
+      color: #333;
+    }
+    p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+    .btn {
+      margin-top: 2em;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #ffa726;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #fb8c00;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="face">😵</div>
+    <h1>哎呀！页面走丢啦</h1>
+    <!--<p>选课界面没有加载成功，可能是网络连接出现了问题。</p>-->
+  </div>
+</body>
+</html>
