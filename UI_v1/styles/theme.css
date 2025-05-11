@@ -1,0 +1,61 @@
+/* ---------- 主题变量 ---------- */
+:root {
+    --bg-color: #f0f2f5; /* 背景色 */
+    --card-bg: #ffffffcc; /* 卡片背景色 */
+    --text-color: #2c3e50;/* 文本颜色 */
+    --accent: #0a84ff;/* 主要颜色 */
+    --shadow: rgba(0,0,0,0.1);/* 阴影 */
+    --font: "Segoe UI Variable","Segoe UI","Helvetica Neue",Arial,sans-serif;
+}
+.dark {
+    --bg-color: #1e1e1e;
+    --card-bg: #2a2a2acc;
+    --text-color: #e5e5e5;
+    --accent: #0a84ff;
+    --shadow: rgba(0,0,0,0.5);
+}
+.blue-theme { 
+    --bg-color: linear-gradient(135deg, #56cbf292 0%, #2f81edbe 100%);
+    --card-bg:  #e3f2fd; 
+    --text-color: #333; 
+    --accent: #2196f3; 
+    --shadow: rgba(0,0,0,0.1); 
+}
+.green-theme { 
+    --bg-color: linear-gradient(135deg, #a1ffcec0 0%, #eefa92d7 100%);
+    --card-bg:  #e8f5e9 ; 
+    --text-color: #333; 
+    --accent: #4caf50; 
+    --shadow: rgba(0,0,0,0.1); 
+}
+.purple-theme { 
+    --bg-color: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    --card-bg:  #f3e5f5; 
+    --text-color: #333; 
+    --accent: #9c27b0; 
+    --shadow: rgba(0,0,0,0.1); 
+}
+
+/* ---------- 主题切换区 ---------- */
+.theme-toggle {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.theme-btn {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: var(--card-bg);
+    box-shadow: 0 4px 12px var(--shadow);
+    transition: box-shadow 0.3s, transform 0.2s;
+}
+.theme-btn:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 18px var(--shadow); 
+}

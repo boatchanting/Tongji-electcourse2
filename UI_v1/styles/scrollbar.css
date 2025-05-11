@@ -1,0 +1,14 @@
+ /* ---------- 滚动条 ---------- */
+ ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 6px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { filter: brightness(1.2); }
+  ::-webkit-scrollbar-corner { background: transparent; }

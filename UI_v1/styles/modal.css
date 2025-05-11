@@ -1,0 +1,50 @@
+/* ---------- Modal 样式 ---------- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px var(--shadow);
+    width: 400px;
+    max-width: 90%;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
+    }
+
+    .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    }
+
+    .modal-header h3 {
+    margin: 0;
+    }
+
+    .modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: var(--text-color);
+    }
+
+    .modal-body { margin-top: 10px; }
+
+    .modal-footer { margin-top: 20px; text-align: right; }
+
+    @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+    }

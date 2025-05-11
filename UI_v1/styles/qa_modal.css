@@ -1,0 +1,51 @@
+/* Q&A 模态框 */
+#qa-modal.qa-modal-overlay {
+    position: fixed; top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: center; justify-content: center;
+    z-index: 10001;
+  }
+  #qa-modal.qa-modal-overlay.active {
+    display: flex;
+  }
+  .qa-modal {
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    width: 450px; max-width: 90%; padding: 20px;
+    animation: qa-fadeIn 0.2s ease-out;
+    font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif;
+    color: var(--text-color);
+  }
+  .qa-modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .qa-modal-close {
+    background: transparent; border: none; font-size: 1.3em;
+    cursor: pointer; 
+    color: var(--text-color);
+  }
+  .qa-modal-body {
+    margin-top: 12px; line-height: 1.5;
+  }
+  .qa-modal-footer {
+    margin-top: 20px; text-align: right;
+  }
+  .qa-btn {
+    padding: 6px 14px; margin-left: 8px;
+    border: none; border-radius: 5px; cursor: pointer;
+    font-size: 0.9em;
+  }
+  .qa-prevBtn {
+    background: #ccc; 
+    color: #333;
+  }
+  .qa-nextBtn {
+    background: var(--accent); 
+    color: var(--text-color);
+  }
+  @keyframes qa-fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }

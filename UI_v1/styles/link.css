@@ -1,0 +1,12 @@
+/* ---------- 全局：链接样式 ---------- */
+a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    }
+    a:hover {
+    color: var(--text-color);
+    }
+    a:active {
+    color: var(--shadow);
+    }
