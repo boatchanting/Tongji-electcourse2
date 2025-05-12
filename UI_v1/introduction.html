@@ -99,6 +99,26 @@
     }
     .hero button:hover { filter: brightness(1.1); transform: translateY(-3px); }
     .hero button:active { transform: translateY(0); }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap; /* 允许换行以适应小屏幕 */
+      justify-content: center;
+      gap: 16px; /* 按钮之间的间距 */
+      margin-top: 24px;
+    }
+
+    .button-group button {
+      padding: 14px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%);
+      color: #fff;
+      cursor: pointer;
+      transition: filter 0.2s, transform 0.1s;
+      min-width: 130px;
+      text-align: center;
+    }
 
     /* 波浪分隔 */
     .wave {
@@ -137,12 +157,27 @@
     .feature-icon {
       font-size: 2.6rem;
       margin-bottom: 14px;
-      background: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%);
+      /* background: linear-gradient(90deg, var(--grad-start) 0%, var(--grad-end) 100%);
       background-clip: text;
-      -webkit-text-fill-color: transparent;
+      -webkit-text-fill-color: transparent; */
     }
     .feature-title { font-size: 1.15rem; font-weight: 600; margin-bottom: 8px; }
     .feature-desc  { font-size: 0.95rem; line-height: 1.6; }
+
+    /* 手机端适配 */
+    @media (max-width: 768px) {
+      .features {
+        padding: 40px 16px; /* 减小上下和左右内边距 */
+        margin: 0 -16px;    /* 抵消 body 的 padding，避免留白 */
+        width: calc(100% + 32px); /* 补偿 margin 的负值，保持视觉居中 */
+        max-width: none;    /* 移除最大宽度限制，让内容撑满屏幕 */
+      }
+
+      .feature-card {
+        border-radius: 12px; /* 可选：减小圆角，更适合移动端 */
+        padding: 24px 16px;  /* 可选：调整内边距 */
+      }
+    }
 
     /* =============== 概述 =============== */
     .overview {
@@ -237,12 +272,22 @@
     .carousel-btn.prev { left: 12px; }
     .carousel-btn.next { right: 12px; }
 
-    @media (max-width: 640px) {
-      .carousel { margin: 40px 0; }
+    /* 手机端适配 */
+    @media (max-width: 768px) {
+      .carousel {
+        width: 100vw;                    /* 占满整个视口宽度 */
+        max-width: none;                 /* 移除最大宽度限制 */
+        margin-left: 50%;                /* 水平居中 */
+        transform: translateX(-50%);     /* 补偿偏移，实现居中 */
+        padding: 0;                      /* 移除默认 padding */
+        border-radius: 0;                /* 可选：移动端去掉圆角更简洁 */
+        box-shadow: none;                /* 可选：去掉阴影提升性能 */
+      }
       .carousel-btn { width: 32px; height: 32px; font-size: 1.3rem; }
+      .carousel-track img {
+        object-fit: contain;               /* 图片撑满容器，保持比例 */
+      }
     }
-
-
 
     /* =============== 手机端适配 =============== */
     @media (max-width: 640px) {
@@ -271,8 +316,9 @@
   <header class="hero">
     <h1>Tongji‑Electcourse2</h1>
     <p>专为同济学子设计的可视化辅助选课工具，支持自动登录、循环重试与多线程并发，让选课更高效。</p>
-    <button onclick="window.location.href='https://github.com/boatchanting/Tongji-electcourse2/releases/'">下载链接</button>
-    <button onclick="window.location.href='https://kkgithub.com/boatchanting/Tongji-electcourse2/releases/'">下载链接(镜像)</button>
+    <div class="button-group">
+    <button onclick="window.location.href='https://github.com/boatchanting/Tongji-electcourse2/releases/ '">下载链接</button>
+    <button onclick="window.location.href='https://gh-proxy.com/github.com/boatchanting/Tongji-electcourse2/releases/download/Tongji-Electcourse2-v1.0.0/Tongji-electcourse2-v1.0.0.exe '">镜像下载</button></div>
   </header>
 
   <!-- 图片轮播 Carousel -->
@@ -300,8 +346,8 @@
     </div>
     <div class="feature-card">
       <div class="feature-icon">🔄</div>
-      <div class="feature-title">自定义重试</div>
-      <div class="feature-desc">可为热门课程设置最大重试次数，直到成功或达到上限。</div>
+      <div class="feature-title">自动刷新</div>
+      <div class="feature-desc">选课过程中，自动刷新课程列表，确保最新状态。</div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">📊</div>
@@ -310,8 +356,8 @@
     </div>
     <div class="feature-card">
       <div class="feature-icon">🚀</div>
-      <div class="feature-title">多线程并发</div>
-      <div class="feature-desc">不同课程独立线程并行运行，大幅提升选课概率。</div>
+      <div class="feature-title">多进程并发</div>
+      <div class="feature-desc">不同课程独立进程并行运行，大幅提升选课概率。</div>
     </div>
     <div class="feature-card">
       <div class="feature-icon">🎨</div>
@@ -321,7 +367,17 @@
     <div class="feature-card">
       <div class="feature-icon">🛡️</div>
       <div class="feature-title">隐私安全</div>
-      <div class="feature-desc">本地运行，无任何账号信息上传，保证数据安全。</div>
+      <div class="feature-desc">源代码本地运行，无任何信息上传，保证数据安全。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💾</div>
+      <div class="feature-title">绿色运行</div>
+      <div class="feature-desc">解压后双击运行，免安装，不写入注册表，不产生临时文件，无软件残留。</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏫</div>
+      <div class="feature-title">多校适配</div>
+      <div class="feature-desc">仅通过更改项目源代码中的auto_elect_course函数即可适配其他学校选课系统，扩展方便</div>
     </div>
   </section>
 
@@ -337,7 +393,7 @@
     开源地址：<a href="https://github.com/boatchanting/Tongji-Electcourse2" target="_blank">GitHub</a> · 反馈：<a href="https://github.com/boatchanting/Tongji-Electcourse2/issues" target="_blank">Issues</a>
   </footer>
 
-  <!-- 主题切换脚本复用 -->
+  <!-- 主题切换 -->
   <script src="scripts/theme.js"></script>
 
 <script>
