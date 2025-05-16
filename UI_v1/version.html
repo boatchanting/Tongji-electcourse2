@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>版本信息 - Tongji-Electcourse2</title>
+
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="styles/theme.css"/><!-- 主题样式 -->
+    <link rel="stylesheet" href="styles/link.css"/><!-- 链接样式 -->
+    <link rel="stylesheet" href="styles/modal.css"/><!-- 通用模态框样式 -->
+    <link rel="stylesheet" href="styles/scrollbar.css"/><!-- 滚动条样式 -->
+
+    <style>
+        /* =============== 全局 =============== */
+        *{box-sizing:border-box;}
+        body{
+            font-family:var(--font);
+            background:var(--bg-color);
+            color:var(--text-color);
+            margin:0;
+            padding:20px;
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+            transition:background .3s,color .3s;
+        }
+
+        /* 卡片 */
+        .card{
+            background:var(--card-bg);
+            backdrop-filter:blur(10px);
+            border-radius:12px;
+            box-shadow:0 8px 24px var(--shadow);
+            padding:24px 32px;
+            margin:0 auto 1.75rem;
+            max-width:680px;
+            transition:background .3s,box-shadow .3s;
+        }
+        h1{text-align:center;margin-top:0;margin-bottom:1.5rem;color:var(--text-color);}
+
+        button {
+        font-family: var(--font);
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.1s;
+        }
+        button:hover { background: shade(var(--accent), 0.9); transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+
+        /* 版本信息列表 */
+        .version-list{
+            list-style:none;
+            padding:0;
+            margin:0;
+            font-size:1.05rem;
+            line-height:1.9;
+        }
+        .version-list li{
+            display:flex;
+            justify-content:space-between;
+            border-bottom:1px dashed var(--divider,#e0e0e0);
+            padding:.25rem 0;
+        }
+        .version-list strong{color:var(--accent);font-weight:600;}
+
+        /* 底部 */
+        footer{
+            margin-top:auto;
+            text-align:center;
+            font-size:.9rem;
+            color:var(--text-color);
+        }
+        footer a{color:var(--accent);text-decoration:none;}
+        footer a:hover{text-decoration:underline;}
+    </style>
+</head>
+<body>
+    <!-- ===== 主题切换 ===== -->
+    <div class="theme-toggle">
+        <button class="theme-btn" id="lightBtn">☀️</button>
+        <button class="theme-btn" id="darkBtn">🌙</button>
+        <button class="theme-btn" id="blueBtn">🌊</button>
+        <button class="theme-btn" id="greenBtn">🍃</button>
+        <button class="theme-btn" id="purpleBtn">🎨</button>
+    </div>
+
+    <!-- ===== 版本信息 ===== -->
+    <div class="card">
+    <h1>软件版本信息</h1>
+    <ul class="version-list">
+        <li><strong>软件版本</strong><span id="ver">待获取</span></li>
+        <li><strong>构建日期</strong><span id="build">待获取</span></li>
+        <li><strong>API&nbsp;版本</strong><span id="api">待获取</span></li>
+        <li><strong>UI&nbsp;版本</strong><span id="ui">待获取</span></li>
+        <li><strong>状态</strong><span id="status">待获取</span></li>
+    </ul>
+        <div style="text-align:center;margin-top:1.5rem;">
+            <button onclick="getVersionInfo()" style="padding:.5rem 1rem;font-size:1rem;border:none;border-radius:6px;background:var(--accent);color:#fff;cursor:pointer;">点击获取版本信息</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Copyright © 2025 Tongji-Electcourse2</p>
+        <!-- 返回主界面 -->
+        <p><a href="system.html">返回主界面</a></p>
+    </footer>
+
+    <!-- 错误信息弹窗 -->
+    <div id="modal-error" class="modal-overlay">
+    <div class="modal">
+        <div class="modal-header">
+        <h3>Tongji-Electcourse2</h3>
+        <button class="modal-close" onclick="hideErrorModal()">×</button>
+        </div>
+        <div class="modal-body" id="modal-error-body">
+        <!-- 错误信息由 JS 填充 -->
+        </div>
+        <div class="modal-footer">
+        <button onclick="hideErrorModal()">确定</button>
+        </div>
+    </div>
+    </div>
+
+    <!-- 主题切换脚本 -->
+    <script src="scripts/theme.js"></script>
+
+    <!-- ===== 版本信息获取脚本 ===== -->
+    <script>
+function showErrorModal(msg) {
+  document.getElementById('modal-error-body').innerHTML = msg;
+  document.getElementById('modal-error').classList.add('active');
+}
+function hideErrorModal() {
+  document.getElementById('modal-error').classList.remove('active');
+}
+
+    </script>
+    <script>
+function getVersionInfo() {
+    const placeholders = ['ver','build','api','ui','status'];
+
+    // 超时提示（后端版本过老）
+    const timeoutId = setTimeout(() => {
+        showErrorModal(
+            '当前软件版本过老，暂不支持获取版本信息功能。<br>' +
+            '请访问 <a href="https://github.com/boatchanting/Tongji-electcourse2/releases" target="_blank">项目发布页</a> 以获取最新版本。'
+        );
+        placeholders.forEach(id => {
+            document.getElementById(id).textContent = '暂不可用';
+        });
+    }, 300); // 300ms无响应就超时
+
+    // 如果后端不存在
+    if (!(window.pywebview && window.pywebview.api)) {
+        clearTimeout(timeoutId);
+        showErrorModal(
+            '当前软件版本过老，暂不支持获取版本信息功能。<br>' +
+            '请访问 <a href="https://github.com/boatchanting/Tongji-electcourse2/releases" target="_blank">项目发布页</a> 以获取最新版本。'
+        );
+        placeholders.forEach(id => {
+            document.getElementById(id).textContent = '暂不可用';
+        });
+        return;
+    }
+
+    // 正常获取版本信息
+    window.pywebview.api.get_version()
+        .then(info => {
+            clearTimeout(timeoutId); // 成功前清除超时判断
+            if (!info) return;
+            document.getElementById('ver').textContent    = info.version      ?? '-';
+            document.getElementById('build').textContent  = info.build_date   ?? '-';
+            document.getElementById('api').textContent    = info.api_version  ?? '-';
+            document.getElementById('ui').textContent     = info.ui_version   ?? '-';
+            document.getElementById('status').textContent = info.status       ?? '-';
+        })
+        .catch(err => {
+            clearTimeout(timeoutId);
+            console.error('获取版本信息失败:', err);
+            showErrorModal('获取版本信息失败，请确认后端已正确加载，或稍后重试。');
+            placeholders.forEach(id => {
+                document.getElementById(id).textContent = '无法读取';
+            });
+        });
+}
+
+
+</script>
+
+</body>
+</html>

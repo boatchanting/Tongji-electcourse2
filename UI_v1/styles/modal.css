@@ -22,6 +22,11 @@
     animation: fadeIn 0.2s ease-out;
     }
 
+    .modal-body a {
+        color: var(--accent);
+        text-decoration: underline;
+    }
+
     .modal-header {
     display: flex;
     justify-content: space-between;
