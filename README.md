@@ -13,9 +13,9 @@
 </div>
 <div align="center">
   <p>本项目使用Selenium及webdriver实现自动选课功能，适配各大学校选课网站。它能够模拟你的选课操作自动登录、选择课程，且软件安全友好，免安装一键运行。</p>
-  [🔗 v1版本发布页](https://github.com/boatchanting/Tongji-electcourse2/UI_v1/introduction.html)
 </div>
 
+[🔗v1版本发布页](https://github.com/boatchanting/Tongji-electcourse2/UI_v1/introduction.html)
 
 ## 界面预览
 |                                                                                                                                |                                                                                               |
