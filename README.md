@@ -13,7 +13,7 @@
 </div>
 <div align="center">
   <p>本项目使用 `Selenium` 库及 webdriver 实现自动选课功能，适配学校选课网站。它能够自动登录、选择课程，并进行选课操作。</p>
-  发布页<a href="https://github.com/boatchanting/Tongji-electcourse2/UI_v1/introduction.html">
+  [a href="https://github.com/boatchanting/Tongji-electcourse2/UI_v1/introduction.html"](v1版本发布页)
 </div>
 
 <div align="center">
@@ -24,6 +24,9 @@
     </button>
   </a>
 </div>
+
+
+
 
 <div align="center">
   <h4>v0.2.1版本截图</h4>
