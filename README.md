@@ -1,6 +1,6 @@
 <div align="center">
   <h1 style="font-family: 'Arial', sans-serif; color: #333;">Tongji Electcourse</h1>
-  <p style="font-size: 1.2rem; color: #777;">使用 Selenium 库实现自动选课功能</p>
+  <p style="font-size: 1.2rem; color: #777;">轻松、高效、透明 —— 自动选课，解放双手！</p>
   <img src="https://boatchanting.github.io/Tongji-electcourse2/icon/logo.png" width="300" alt="Logo">
 </div>
 <!-- 添加一些徽章 -->
@@ -12,32 +12,19 @@
   <a href="https://github.com/boatchanting/Tongji-electcourse2/graphs/contributors"><img src="https://img.shields.io/github/contributors/boatchanting/Tongji-electcourse2?style=flat-square" alt="Contributors"></a>
 </div>
 <div align="center">
-  <p>本项目使用 `Selenium` 库及 webdriver 实现自动选课功能，适配学校选课网站。它能够自动登录、选择课程，并进行选课操作。</p>
-  [a href="https://github.com/boatchanting/Tongji-electcourse2/UI_v1/introduction.html"](v1版本发布页)
-</div>
-
-<div align="center">
-  <h3>🌟🌟🌟直接看release下载exe可执行文件</h3>
-  <a href="https://github.com/boatchanting/Tongji-electcourse2/releases">
-    <button style="background-color: #007BFF; color: white; border: none; padding: 10px 20px; font-size: 1.2rem; border-radius: 5px; cursor: pointer;">
-      我要下载
-    </button>
-  </a>
+  <p>本项目使用Selenium及webdriver实现自动选课功能，适配各大学校选课网站。它能够模拟你的选课操作自动登录、选择课程，且软件安全友好，免安装一键运行。</p>
+  [🔗 v1版本发布页](https://github.com/boatchanting/Tongji-electcourse2/UI_v1/introduction.html)
 </div>
 
 
+## 界面预览
+|                                                                                                                                |                                                                                               |
+| :----------------------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
+|                  ![](https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/UI_v1/img/p1.png)                 | ![](https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/UI_v1/img/p2.png) |
+|                  ![](https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/UI_v1/img/p3.png)                 | ![](https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/UI_v1/img/p4.png) |
+| <img src="https://raw.githubusercontent.com/boatchanting/Tongji-electcourse2/main/UI_v1/img/p5.png" alt="主题切换示例" width="100%"> |                                                                                               |
 
-
-<div align="center">
-  <h4>v0.2.1版本截图</h4>
-  <img src="https://boatchanting.github.io/Tongji-electcourse2/img/example_v0.2.1.png" width="400" alt="v0.2.1 Screenshot">
-</div>
-
-<div align="center">
-  <h4>v0.1.1版本截图</h4>
-  <img src="https://boatchanting.github.io/Tongji-electcourse2/example.png" width="600" alt="v0.1.1 Screenshot">
-</div>
-
+> **图 1‑5**：自动选课系统展示
 
 <h3>功能特点</h3>
 <ul style="list-style: none; padding: 0;">
@@ -68,7 +55,7 @@
 ---
 
 ### 4. 可以同时选择多门课程吗？
-暂时没有添加这个功能，不过可以挂多个这样的程序在后台，可以解决这个问题。
+当然可以，v1.0.0 + 版本具有该功能!
 
 ---
 
@@ -88,7 +75,7 @@
 git pull origin main
 ```
 
-## 环境配置（快速）
+## 环境配置（老版）（快速）
 1. 下载/克隆本项目到本地：
    ```sh
    git clone https://github.com/boatchanting/Tongji-electcourse2.git
@@ -97,7 +84,7 @@ git pull origin main
 2. 运行 `setup_env.bat` 配置环境（Windows）。
 3. 运行 `run.bat` 启动程序。
 
-## 环境配置
+## 环境配置（老版）
 ### 1. 创建虚拟环境并安装 Python 依赖
 本项目依赖 `Selenium`，请先确保你已经安装 Python，并使用以下命令安装必要的依赖：
 ```sh
