@@ -280,6 +280,23 @@
       </div>
     </div>
   </div>
+  <!-- 推送消息弹窗 modal-push -->
+  <div id="modal-push" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Tongji-Electcourse2</h3>
+        <button class="modal-close" onclick="hidePushModal()">×</button>
+      </div>
+      <div class="modal-body" id="modal-push-body"><!-- JS 填充 --></div>
+      <div class="modal-footer">
+        <button onclick="hidePushModal()">好的</button>
+      </div>
+    </div>
+  </div>
+
+
+  
+
 
 
   <!-- footer -->
@@ -293,6 +310,7 @@
   <script src="scripts/guide.js"></script><!-- 使用指南逻辑 -->
   <script src="scripts/qa.js"></script><!-- Q&A 逻辑 -->
   <script src="scripts/backend.js"></script><!-- 与后端交互逻辑 -->
+  <script src="scripts/push-message.js"></script><!-- 推送消息逻辑 -->
   <script>// 标记是否已经弹出过弹窗
 function showConfirmModal(msg) {
   document.getElementById('modal-confirm-body').innerHTML = msg;
