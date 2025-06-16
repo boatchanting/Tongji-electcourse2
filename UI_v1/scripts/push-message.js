@@ -35,7 +35,8 @@ window.addEventListener('DOMContentLoaded', () => {
   showPushModal(
     '🎉 <strong>Tongji-Electcourse2</strong> 祝您第三轮选课愉快！<br>' +
     '📣 如果你觉得这个程序有用，不妨把它 <strong>分享给更多小伙伴</strong> 吧～<br>' +
-    '✨ 祝你选上心仪课程，选课顺利！'
+    '✨ 祝你选上心仪课程，选课顺利！<br>'+
+    '经反馈，本版本未提供改选课功能，可以在程序自动查找课程完毕后，手动点击选课系统页面取消键实现，该问题后续将添加代码自动化完成，完成后将会在第一时间推送更新消息'
   );
 
   // 延时推送 Star 提醒
