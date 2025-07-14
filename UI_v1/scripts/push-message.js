@@ -1,4 +1,3 @@
-// ---------------- 版本检查 ----------------
 let versionConflictModalShown = false;
 
 /**
@@ -10,28 +9,40 @@ function parseVersion(str) {
 }
 
 /**
- * 当检测到版本为空或非 v1.2.0 时，弹出更新提示
+ * 版本检查函数
  */
 function UpdateCheck() {
   if (versionConflictModalShown) return;
   if (!window.pywebview || !window.pywebview.api) return;
 
-  window.pywebview.api.get_version().then(data => {
-    const remoteVer = parseVersion(data?.version);
-    const targetVer = 'v1.2.0';
+  let attempts = 0;
+  const maxAttempts = 300; // 15秒，每50ms尝试一次，共300次
+  const interval = 50; // 每50ms轮询一次
 
-    if (!remoteVer || remoteVer !== targetVer) {
+  const checkVersionInterval = setInterval(() => {
+    window.pywebview.api.get_version().then(data => {
+      const remoteVer = parseVersion(data?.version);
+      const targetVer = 'v1.2.1';
+
+      if (!remoteVer || remoteVer !== targetVer) {
+        clearInterval(checkVersionInterval); // 获取到版本信息，停止轮询
+        versionConflictModalShown = true;
+        showUpdateModal(remoteVer || '未知版本', targetVer);
+      } else {
+        clearInterval(checkVersionInterval); // 获取到目标版本，停止轮询
+        showWelcomePush();
+      }
+    }).catch(() => {
+      // 获取版本失败，继续尝试
+    });
+
+    attempts++;
+    if (attempts >= maxAttempts) {
+      clearInterval(checkVersionInterval); // 超过15秒，停止轮询
       versionConflictModalShown = true;
-      showUpdateModal(remoteVer || '未知版本', targetVer);
-    } else {
-      // 版本正常，按原逻辑继续普通推送
-      showWelcomePush();
+      showUpdateModal('获取失败', 'v1.2.1');
     }
-  }).catch(() => {
-    // 获取版本失败也提示更新
-    versionConflictModalShown = true;
-    showUpdateModal('获取失败', 'v1.2.0');
-  });
+  }, interval);
 }
 
 // ---------------- 推送消息弹窗逻辑 ----------------
@@ -59,12 +70,12 @@ function showUpdateModal(current, target) {
   showPushModal(
     '🎉 <strong>Tongji-Electcourse2</strong> 祝您第三轮选课愉快！<br>' +
     '📣 如果你觉得这个程序有用，不妨把它 <strong>分享给更多小伙伴</strong> 吧～<br>' +
-    '✨ 祝你选上心仪课程，选课顺利！<br>'+
+    '✨ 祝你选上心仪课程，选课顺利！<br>'+ 
     '经反馈，本版本未提供改选课功能，可在程序自动查找课程后手动点击选课系统页面取消键实现，该问题在新版本已经实现。'+
     `当前版本：<code>${current}</code><br>` +
     `目标版本：<code>${target}</code><br><br>` +
-    '请前往 <a href="https://github.com/boatchanting/Tongji-Electcourse2/releases" target="_blank">GitHub Releases</a> 下载最新版本，' +
-    '以体验改选课功能及其他改进。'
+    '请前往 <a href="https://boatchanting.github.io/Tongji-electcourse2/UI_v1/introduction.html" target="_blank">Tongji-electcourse2 项目页</a> 下载最新版本，' +
+    '以体验改选课功能及其他最新改进。'
   );
 }
 
