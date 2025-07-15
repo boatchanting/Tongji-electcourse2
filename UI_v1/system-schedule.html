@@ -171,30 +171,26 @@
   <!-- 登录界面 -->
   
   <div id="login" class="login-wrapper">
-  <div class="card" style="max-width:360px; width:100%; position: relative;">
-    <h2>登录</h2>
-    <!-- 定时模式按钮 -->
-    <a href="system-schedule.html" id="schedule-button" class="button">
-      切换定时模式
+    <div class="card" style="max-width:360px; width:100%;">
+      <h2>登录</h2>
+      <!-- 定时模式按钮 -->
+    <a href="system.html" id="schedule-button" class="button">
+      切换普通模式
     </a>
-    <div style="margin-top:10px;">
-      <label>学号：</label><br>
-      <input id="username" type="text" style="width:100%;"><br><br>
-      <label>密码：</label><br>
-      <input id="password" type="password" style="width:100%;"><br><br>
-      <label><input type="checkbox" id="agree" /> 我已同意 <a href="user_agreement.html">用户守则</a>
-        <a href="javascript:void(0)" id="guide-showLink">使用指南</a>
-        <a href="javascript:void(0)" id="qa-showLink">Q&A</a>
-        <!--<a href="introduction.html" id="qa-showLink">软件介绍</a>-->
-      </label> <br><br>
-      <button style="width:100%;" onclick="login()">登录</button>
+      <div style="margin-top:10px;">
+        <label>学号：</label><br>
+        <input id="username" type="text" style="width:100%;"><br><br>
+        <label>密码：</label><br>
+        <input id="password" type="password" style="width:100%;"><br><br>
+        <label><input type="checkbox" id="agree" /> 我已同意 <a href="user_agreement.html">用户守则</a>
+          <a href="javascript:void(0)" id="guide-showLink">使用指南</a>
+          <a href="javascript:void(0)" id="qa-showLink">Q&A</a>
+          <!--<a href="introduction.html" id="qa-showLink">软件介绍</a>-->
+          </label> <br><br>
+        <button style="width:100%;" onclick="login()">登录</button>
+      </div>
     </div>
-
-    
   </div>
-  </div>
-
-
 
   <!-- 主界面 -->
   <div id="main" style="display:none;">
@@ -230,6 +226,31 @@
         </thead>
         <tbody id="tasks_body"></tbody>
       </table>
+
+<!-- ------------------- 定时启动 ------------------- -->
+<div class="card" id="timer-card">
+  <h3>定时启动</h3>
+
+  <!-- 模式选择 -->
+  <label>
+    <input type="radio" name="timer_mode" value="countdown" checked>
+    倒计时
+  </label>
+  <input id="countdown_seconds" type="number" value="60" min="1" style="width:80px;"> 秒　
+
+  <label style="margin-left:12px;">
+    <input type="radio" name="timer_mode" value="fixed">
+    指定时间
+  </label>
+  <input id="fixed_time" type="datetime-local" style="width:200px;">
+
+  <button id="setTimerBtn" style="margin-left:12px;">设定</button>
+
+  <!-- 剩余时间显示 -->
+  <span id="timer_display" style="margin-left:20px; font-weight:600;"></span>
+</div>
+
+
 
       <h3 style="margin-top:20px; display:flex; align-items:center;">
         日志输出
@@ -288,26 +309,6 @@
       </div>
     </div>
   </div>
-  <!-- 推送消息弹窗 modal-push -->
-  <div id="modal-push" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>Tongji-Electcourse2</h3>
-        <button class="modal-close" onclick="hidePushModal()">×</button>
-      </div>
-      <div class="modal-body" id="modal-push-body"><!-- JS 填充 --></div>
-      <div class="modal-footer">
-        <div class="modal-footer">
-          <button id="modal-push-btn" onclick="hidePushModal()">好的</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  
-
-
 
   <!-- footer -->
   <footer>
@@ -320,9 +321,7 @@
   <script src="scripts/guide.js"></script><!-- 使用指南逻辑 -->
   <script src="scripts/qa.js"></script><!-- Q&A 逻辑 -->
   <script src="scripts/backend.js"></script><!-- 与后端交互逻辑 -->
-  <script src="scripts/push-message.js"></script><!-- 推送消息逻辑 -->
   <script>// 标记是否已经弹出过弹窗
-
 function showConfirmModal(msg) {
   document.getElementById('modal-confirm-body').innerHTML = msg;
   document.getElementById('modal-confirm').classList.add('active');
@@ -357,7 +356,11 @@ window.addEventListener('DOMContentLoaded', function() {
   setTimeout(checkVersionAndNotify, 1000);
 });
 
-
 </script>
+<script src="scripts/scheduler.js"></script>
 </body>
 </html>
+
+
+  
+
