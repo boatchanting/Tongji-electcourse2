@@ -314,6 +314,7 @@
   <script src="scripts/backend.js"></script><!-- 与后端交互逻辑 -->
   <script src="scripts/push-message.js"></script><!-- 推送消息逻辑 -->
   <script>// 标记是否已经弹出过弹窗
+
 function showConfirmModal(msg) {
   document.getElementById('modal-confirm-body').innerHTML = msg;
   document.getElementById('modal-confirm').classList.add('active');
@@ -321,7 +322,11 @@ function showConfirmModal(msg) {
 
 // 修改为包含链接的弹窗信息
 const versionConflictMsg = `
-  抱歉，经反馈，该版本出现了api冲突，您可以暂时选择下载上一稳定版本（v1.0.0），将尽快修复。<br>
+  🎉 Tongji-Electcourse2 v1.2.1 更新！<br>
+📣 本次更新包含以下重要功能：<br>
+1. 改选课功能 📝<br>
+2. 定时自动选课功能 ⏰<br>
+3. 日志消息上限限制 📈<br>
   <a href="https://boatchanting.github.io/Tongji-electcourse2/UI_v1/introduction.html" target="_blank" style="color:var(--accent);text-decoration: underline;">软件说明及下载页面 &gt;&gt;</a>
 `;
 
@@ -332,7 +337,7 @@ function checkVersionAndNotify() {
   if (!window.pywebview || !window.pywebview.api) return;
 
   window.pywebview.api.get_version().then(function(data) {
-    if (data && data.version === "Tongji-electcourse2v1.1.0") {
+    if (data && data.version !== "Tongji-electcourse2v1.2.1") {
       versionConflictModalShown = true;
       showConfirmModal(versionConflictMsg);
     }
@@ -343,6 +348,7 @@ window.addEventListener('DOMContentLoaded', function() {
   setInterval(checkVersionAndNotify, 60 * 1000);
   setTimeout(checkVersionAndNotify, 1000);
 });
+
 
 </script>
 </body>
