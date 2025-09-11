@@ -95,11 +95,11 @@ def download_edgedriver(version, driver_dir="./webdriver"):
 
         os.remove(zip_path)
 
-        # ✅ 记录版本号到 VERSION 文件
+        # 记录版本号到 VERSION 文件
         with open(version_file, 'w', encoding='utf-8') as f:
             f.write(version)
 
-        print(f"✅ 驱动下载并解压成功: {driver_path}")
+        print(f"驱动下载并解压成功: {driver_path}")
         return driver_path
 
     except Exception as e:
@@ -127,11 +127,11 @@ def init_edge_driver(headless=False):
         service = Service(executable_path=driver_path)
         driver = webdriver.Edge(service=service, options=edge_options)
 
-        print("✅ Edge WebDriver 启动成功！")
+        print("Edge WebDriver 启动成功！")
         return driver
 
     except Exception as e:
-        print(f"❌ 启动 Edge 失败: {e}")
+        print(f"启动 Edge 失败: {e}")
         raise
 
 
