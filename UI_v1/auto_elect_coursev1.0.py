@@ -196,7 +196,7 @@ class Api:
         """
         return {
             "version": "Tongji-electcourse2v1.3.0",
-            "build_date": "2025-9-12",  # 构建日期
+            "build_date": "2025-9-11",  # 构建日期
             "api_version": "1.3.0", # API 版本
             "ui_version": "1.1.0+", # UI 版本
             "status": "stable"# 可以是 'alpha', 'beta', 'stable' 等
@@ -740,7 +740,7 @@ if __name__ == '__main__':
 
     # 创建窗口
     window = webview.create_window(
-        title='Tongji-electcourse2-v1.2.1',
+        title='Tongji-electcourse2-v1.3.0',
         url=final_url,
         js_api=api,
         width=850,
