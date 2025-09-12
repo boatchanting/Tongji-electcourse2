@@ -5,9 +5,10 @@ import subprocess
 import sys
 import zipfile
 import requests
+import logging
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
-
+from selenium.webdriver.edge.options import Options
 
 def get_edge_version():
     """自动获取 Edge 浏览器版本"""
@@ -106,7 +107,7 @@ def download_edgedriver(version, driver_dir="./webdriver"):
         raise RuntimeError(f"下载 EdgeDriver 失败: {e}")
 
 
-def init_edge_driver(headless=False):
+def init_edge_driver(headless=True):
     """自动初始化 Edge WebDriver"""
     try:
         version = get_edge_version()
@@ -133,6 +134,61 @@ def init_edge_driver(headless=False):
     except Exception as e:
         print(f"启动 Edge 失败: {e}")
         raise
+
+def test_driver_health():
+    """
+    【API】测试浏览器驱动是否正常工作
+    返回浏览器版本、驱动版本、测试结果等信息
+    """
+
+    result = {
+        "success": False,
+        "browser_version": None,
+        "driver_version": None,
+        "message": "",
+        "error": None
+    }
+
+    try:
+        # 1. 获取浏览器版本
+        browser_version = get_edge_version()
+        result["browser_version"] = browser_version
+        logging.info(f"✅ 检测到 Edge 浏览器版本: {browser_version}")
+
+        # 2. 下载/获取驱动（自动判断是否已存在）
+        driver_path = download_edgedriver(browser_version)
+        result["driver_version"] = browser_version  # edgedriver 版本与浏览器一致
+        logging.info(f"✅ 驱动已就绪: {driver_path}")
+
+        # 3. 实际初始化一次浏览器（非headless，快速测试）
+        edge_options = Options()
+        edge_options.add_argument("--window-size=800,600")
+        edge_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        edge_options.add_argument('--log-level=3')
+
+        service = Service(executable_path=driver_path)
+        driver = webdriver.Edge(service=service, options=edge_options)
+
+        # 4. 简单交互测试
+        driver.get("about:blank")
+        actual_version = driver.capabilities['browserVersion']
+        driver_version_in_caps = driver.capabilities['ms:edgeChromium']
+        
+        logging.info(f"✅ WebDriver 启动成功！浏览器实际版本: {actual_version}")
+        driver.quit()
+
+        # 5. 填写成功结果
+        result["success"] = True
+        result["message"] = "浏览器与驱动匹配，通信正常，可执行自动化任务。"
+        logging.info("🟢 浏览器驱动健康检查通过")
+
+    except Exception as e:
+        error_msg = str(e)
+        result["error"] = error_msg
+        result["message"] = f"驱动测试失败: {error_msg}"
+        logging.error(f"🔴 驱动测试失败: {error_msg}")
+
+    return result
 
 
 # if __name__ == "__main__":
