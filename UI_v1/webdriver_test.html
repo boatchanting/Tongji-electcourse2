@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>驱动状态 - Tongji-Electcourse2</title>
+
+    <!-- 公共样式 -->
+    <link rel="stylesheet" href="styles/theme.css"/>      <!-- 主题样式 -->
+    <link rel="stylesheet" href="styles/link.css"/>       <!-- 链接样式 -->
+    <link rel="stylesheet" href="styles/modal.css"/>      <!-- 通用模态框样式 -->
+    <link rel="stylesheet" href="styles/scrollbar.css"/>  <!-- 滚动条样式 -->
+
+    <style>
+        /* =============== 全局 =============== */
+        * { box-sizing: border-box; }
+        body {
+            font-family: var(--font);
+            background: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background .3s, color .3s;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px var(--shadow);
+            padding: 24px 32px;
+            margin: 0 auto 1.75rem;
+            max-width: 680px;
+            transition: background .3s, box-shadow .3s;
+        }
+        h1 { text-align: center; margin-top: 0; margin-bottom: 1.5rem; color: var(--text-color); }
+
+        button {
+            font-family: var(--font);
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        button:hover { background: shade(var(--accent), 0.9); transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+
+        /* 状态列表 */
+        .status-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 1.05rem;
+            line-height: 2;
+        }
+        .status-list li {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed var(--divider, #e0e0e0);
+            padding: 0.25rem 0;
+        }
+        .status-list strong { color: var(--accent); font-weight: 600; }
+
+        /* 状态指示器 */
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .status-success { background: #4caf50; }
+        .status-failed { background: #f44336; }
+        .status-pending { background: #ff9800; }
+
+        /* 日志输出区域 */
+        #log-output {
+            width: 100%;
+            height: 150px;
+            background: rgba(0,0,0,0.05);
+            border: 1px solid var(--divider);
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-y: auto;
+            color: #666;
+        }
+
+        /* 底部 */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            font-size: .9rem;
+            color: var(--text-color);
+        }
+        footer a { color: var(--accent); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== 主题切换 ===== -->
+    <div class="theme-toggle">
+        <button class="theme-btn" id="lightBtn">☀️</button>
+        <button class="theme-btn" id="darkBtn">🌙</button>
+        <button class="theme-btn" id="blueBtn">🌊</button>
+        <button class="theme-btn" id="greenBtn">🍃</button>
+        <button class="theme-btn" id="purpleBtn">🎨</button>
+    </div>
+
+    <!-- ===== 驱动状态卡片 ===== -->
+    <div class="card">
+        <h1>浏览器驱动状态</h1>
+        <ul class="status-list">
+            <li><strong>测试结果</strong><span id="result"><span class="status-indicator status-pending"></span>待检测</span></li>
+            <li><strong>浏览器版本</strong><span id="browser-version">-</span></li>
+            <li><strong>驱动版本</strong><span id="driver-version">-</span></li>
+            <li><strong>错误信息</strong><span id="error-message">-</span></li>
+        </ul>
+
+        <div style="text-align:center;margin-top:1.5rem;">
+            <button onclick="testDriver()" style="padding:.5rem 1rem;font-size:1rem;">🔍 测试驱动状态</button>
+        </div>
+
+        <!-- 日志输出 -->
+        <div style="margin-top:1rem;">
+            <label><strong>运行日志：</strong></label>
+            <pre id="log-output">等待测试...</pre>
+        </div>
+    </div>
+
+    <footer>
+        <p>Copyright © 2025 Tongji-Electcourse2</p>
+        <p><a href="system.html">返回主界面</a></p>
+    </footer>
+
+    <!-- 错误弹窗 -->
+    <div id="modal-error" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Tongji-Electcourse2</h3>
+                <button class="modal-close" onclick="hideErrorModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-error-body"></div>
+            <div class="modal-footer">
+                <button onclick="hideErrorModal()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主题脚本 -->
+    <script src="scripts/theme.js"></script>
+
+    <!-- 弹窗控制 -->
+    <script>
+        function showErrorModal(msg) {
+            document.getElementById('modal-error-body').innerHTML = msg;
+            document.getElementById('modal-error').classList.add('active');
+        }
+        function hideErrorModal() {
+            document.getElementById('modal-error').classList.remove('active');
+        }
+    </script>
+
+    <!-- 驱动状态检测脚本 -->
+    <script>
+        function testDriver() {
+            const resultEl = document.getElementById('result');
+            const browserVer = document.getElementById('browser-version');
+            const driverVer = document.getElementById('driver-version');
+            const errorMsg = document.getElementById('error-message');
+            const logOutput = document.getElementById('log-output');
+
+            // 重置 UI
+            resultEl.innerHTML = '<span class="status-indicator status-pending"></span>检测中...';
+            browserVer.textContent = '-';
+            driverVer.textContent = '-';
+            errorMsg.textContent = '-';
+            logOutput.textContent = '正在启动测试...\n';
+
+            // 超时机制（后端无响应）
+            const timeoutId = setTimeout(() => {
+                showErrorModal(
+                    '与后端通信超时，请确认程序正常运行。<br>' +
+                    '可能是版本过旧或后台异常。'
+                );
+                resultEl.innerHTML = '<span class="status-indicator status-failed"></span>超时';
+            }, 5000);
+
+            // 检查 pywebview 是否存在
+            if (!window.pywebview || !window.pywebview.api) {
+                clearTimeout(timeoutId);
+                showErrorModal(
+                    '当前软件版本过老，不支持驱动检测功能。<br>' +
+                    '请访问 <a href="https://github.com/boatchanting/Tongji-electcourse2/releases" target="_blank">项目发布页</a> 下载最新版。'
+                );
+                resultEl.innerHTML = '<span class="status-indicator status-failed"></span>不支持';
+                logOutput.textContent += '错误：pywebview API 不存在\n';
+                return;
+            }
+
+            // 调用后端 API
+            window.pywebview.api.test_browser_driver()
+                .then(data => {
+                    clearTimeout(timeoutId);
+
+                    // 更新 UI
+                    if (data.success) {
+                        resultEl.innerHTML = '<span class="status-indicator status-success"></span>正常';
+                        logOutput.textContent += '✅ 浏览器驱动测试成功！\n';
+                    } else {
+                        resultEl.innerHTML = '<span class="status-indicator status-failed"></span>异常';
+                        logOutput.textContent += `❌ 测试失败：${data.message}\n`;
+                    }
+
+                    browserVer.textContent = data.browser_version || '-';
+                    driverVer.textContent = data.driver_version || '-';
+                    errorMsg.textContent = data.error ? `⚠️ ${data.error}` : '无';
+
+                    logOutput.scrollTop = logOutput.scrollHeight; // 滚动到底部
+                })
+                .catch(err => {
+                    clearTimeout(timeoutId);
+                    console.error('驱动测试请求失败:', err);
+                    resultEl.innerHTML = '<span class="status-indicator status-failed"></span>请求失败';
+                    errorMsg.textContent = `网络错误：${err.message}`;
+                    logOutput.textContent += `🚨 请求异常：${err.message}\n`;
+                });
+        }
+    </script>
+
+</body>
+</html>
