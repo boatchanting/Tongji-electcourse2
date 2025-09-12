@@ -197,10 +197,10 @@ class Api:
             dict: 包含版本信息的字典
         """
         return {
-            "version": "Tongji-electcourse2v1.3.0",
-            "build_date": "2025-9-11",  # 构建日期
-            "api_version": "1.3.0", # API 版本
-            "ui_version": "1.1.0+", # UI 版本
+            "version": "Tongji-electcourse2v1.3.1",
+            "build_date": "2025-9-12",  # 构建日期
+            "api_version": "1.3.1", # API 版本
+            "ui_version": "1.3.0+", # UI 版本
             "status": "stable"# 可以是 'alpha', 'beta', 'stable' 等
         }
     
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     api = Api()
 
     # 本地页面路径
-    local_index = os.path.abspath(os.path.join(os.path.dirname(__file__), 'system.html'))
+    local_index = os.path.abspath(os.path.join(os.path.dirname(__file__), 'system-scheduler.html'))
     local_404 = os.path.abspath(os.path.join(os.path.dirname(__file__), '404.html'))
 
     # 远程页面地址
@@ -251,8 +251,8 @@ if __name__ == '__main__':
 
     # 创建窗口
     window = webview.create_window(
-        title='Tongji-electcourse2-v1.3.0',
-        url=local_index,
+        title='Tongji-electcourse2-v1.3.1',
+        url=final_url,
         js_api=api,
         width=850,
         height=700

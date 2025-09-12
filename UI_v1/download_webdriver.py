@@ -6,6 +6,7 @@ import sys
 import zipfile
 import requests
 import logging
+import time
 from selenium import webdriver
 from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
@@ -136,10 +137,10 @@ def init_edge_driver(headless=True):
         raise
 
 def test_driver_health():
-    """
-    【API】测试浏览器驱动是否正常工作
-    返回浏览器版本、驱动版本、测试结果等信息
-    """
+    import logging
+    from selenium import webdriver
+    from selenium.webdriver.edge.service import Service
+    from selenium.webdriver.edge.options import Options
 
     result = {
         "success": False,
@@ -150,17 +151,15 @@ def test_driver_health():
     }
 
     try:
-        # 1. 获取浏览器版本
         browser_version = get_edge_version()
         result["browser_version"] = browser_version
         logging.info(f"✅ 检测到 Edge 浏览器版本: {browser_version}")
 
-        # 2. 下载/获取驱动（自动判断是否已存在）
         driver_path = download_edgedriver(browser_version)
-        result["driver_version"] = browser_version  # edgedriver 版本与浏览器一致
+        result["driver_version"] = browser_version
         logging.info(f"✅ 驱动已就绪: {driver_path}")
 
-        # 3. 实际初始化一次浏览器（非headless，快速测试）
+        # 启动浏览器
         edge_options = Options()
         edge_options.add_argument("--window-size=800,600")
         edge_options.add_experimental_option('excludeSwitches', ['enable-logging'])
@@ -169,27 +168,27 @@ def test_driver_health():
         service = Service(executable_path=driver_path)
         driver = webdriver.Edge(service=service, options=edge_options)
 
-        # 4. 简单交互测试
-        driver.get("about:blank")
-        actual_version = driver.capabilities['browserVersion']
-        driver_version_in_caps = driver.capabilities['ms:edgeChromium']
-        
-        logging.info(f"✅ WebDriver 启动成功！浏览器实际版本: {actual_version}")
+        #只获取 browserVersion 和 browserName 即可
+        actual_version = driver.capabilities.get('browserVersion') or driver.capabilities.get('version')
+        browser_name = driver.capabilities.get('browserName')
+
+        if "edge" not in browser_name.lower():
+            raise RuntimeError(f"未启动 Edge 浏览器，实际为: {browser_name}")
+
+        logging.info(f"WebDriver 启动成功！浏览器版本: {actual_version}")
+        time.sleep(0.5)
         driver.quit()
 
-        # 5. 填写成功结果
         result["success"] = True
         result["message"] = "浏览器与驱动匹配，通信正常，可执行自动化任务。"
-        logging.info("🟢 浏览器驱动健康检查通过")
+        logging.info("浏览器驱动健康检查通过")
 
     except Exception as e:
-        error_msg = str(e)
-        result["error"] = error_msg
-        result["message"] = f"驱动测试失败: {error_msg}"
-        logging.error(f"🔴 驱动测试失败: {error_msg}")
+        result["error"] = str(e)
+        result["message"] = f"驱动测试失败: {str(e)}"
+        logging.error(f"驱动测试失败: {e}")
 
     return result
-
 
 # if __name__ == "__main__":
 #     try:
