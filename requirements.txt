@@ -1,10 +1,9 @@
 # 项目依赖库列表
-# 由依赖收集工具自动生成和更新
-
 PyQt5==5.15.11
 importlib
 pathlib
+pkg_resources
 requests
 selenium==4.25.0
 stdiomask
-webview
+pywebview
