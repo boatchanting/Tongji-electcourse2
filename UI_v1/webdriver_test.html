@@ -194,7 +194,7 @@
                     '可能是版本过旧或后台异常。'
                 );
                 resultEl.innerHTML = '<span class="status-indicator status-failed"></span>超时';
-            }, 5000);
+            }, 10000);
 
             // 检查 pywebview 是否存在
             if (!window.pywebview || !window.pywebview.api) {
