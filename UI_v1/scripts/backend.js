@@ -154,7 +154,7 @@ function showLogs(tid) {
     const lines = await window.pywebview.api.get_logs(currentLogTask);
     if (lines.length) {
       lines.forEach(line => {
-        // 将 “[HH:MM:SS.xxx] 内容” 拆成两部分
+        // 将 "[HH:MM:SS.xxx] 内容" 拆成两部分
         const match = line.match(/^\[(.*?)\]\s*(.*)$/);
         const time = match ? match[1] : '';
         const msg  = match ? match[2] : line;
@@ -170,6 +170,16 @@ function showLogs(tid) {
         tr.appendChild(tdMsg);
         tbody.appendChild(tr);
       });
+
+      // 添加日志行数限制，最多显示100条日志
+      const logRows = tbody.querySelectorAll('tr');
+      if (logRows.length > 1) {
+        // 删除超出的旧日志行
+        const excessCount = logRows.length - 100;
+        for (let i = 0; i < excessCount; i++) {
+          tbody.removeChild(logRows[i]);
+        }
+      }
 
       // 滚动到底部
       const container = document.querySelector('.log-table-container');
